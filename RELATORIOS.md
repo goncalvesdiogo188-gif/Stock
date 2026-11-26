@@ -1,10 +1,47 @@
 # Relatórios — Stock do snack bar
 
 ## Estado atual do projeto
-- **Funciona:** app Android (APK v1.1 em `dist/`), com stock offline, famílias, filtros, lista de compras, envio/receção por texto e WhatsApp, e partilha opcional do stock entre telemóveis via Firebase.
-- **Falta:** testar num telemóvel real e com uma base de dados Firebase verdadeira (o utilizador está a criá-la agora).
-- **Maior risco:** a partilha só foi testada contra uma imitação local da Firebase; comportamento real (regras, endereço, PATCH via Java) por confirmar.
-- **Atenção:** a chave de assinatura (`keystore/stock.jks`) não está no git. Sem ela, as atualizações obrigam a desinstalar a app.
+- **Funciona (testado em Chromium):** APK v1.2 em `dist/`, com stock offline, partilha opcional via Firebase, até 3 utilizadores e histórico das últimas 200 alterações.
+- **Falta:** testar num telemóvel real e com a base de dados Firebase verdadeira.
+- **Maior risco:** a partilha e os utilizadores só foram testados contra uma imitação local da Firebase. O comportamento real (regras, PATCH via Java, ponte Android) está por confirmar.
+- **Segurança:** a palavra-passe da chave esteve escrita no `app/build.gradle` (público) até ao commit `60d93c4`. Já foi retirada, mas continua no histórico do git. Recomenda-se mudar a palavra-passe da chave; o certificado mantém-se igual.
+
+---
+
+## 2026-11-26 17:44 — Utilizadores (até 3) e histórico de alterações
+- **Pedido:** ecrã inicial com até 3 utilizadores (só nome), registo de quem faz cada alteração, ecrã "Histórico" com filtro, e assinar com a chave anexada.
+- **Feito:**
+  - Ecrã inicial: botões grandes com os nomes e "+ Novo utilizador" (escondido com 3). Nome com 2 a 20 caracteres, sem repetidos (ignora maiúsculas e acentos).
+  - O telemóvel lembra o último utilizador. No ecrã principal aparece "Utilizador: X" e os botões "Trocar utilizador" e "Histórico".
+  - "Gerir utilizadores": mudar o nome e apagar com dois toques. Se o utilizador atual for apagado, a app volta ao ecrã inicial.
+  - Histórico: utilizador, material, quantidade antes/depois, data e hora e tipo (ajuste, editado, novo, apagado, repor exemplo, texto colado).
+    - Mais recente primeiro, agrupado por dia, com filtro por utilizador. Os utilizadores apagados aparecem como "Nome (apagado)".
+    - Guarda no máximo 200 entradas.
+    - Toques seguidos em +/− no mesmo material, pelo mesmo utilizador, em menos de 1 minuto, juntam-se numa só entrada.
+  - Firebase: utilizadores em `lojas/<código>/users` e histórico em `lojas/<código>/history`. Cada entrada do histórico vai no mesmo PATCH que a alteração do stock (atómico). Os incrementos atómicos e a fila offline mantêm-se. Sem alterações às regras.
+  - Se 2 telemóveis criarem o 4.º utilizador ao mesmo tempo, ficam os 3 mais antigos.
+  - `app/build.gradle`: a palavra-passe da chave sai do código. Passa a vir de `STOCK_KS_PASS` ou de `keystore/keystore.properties` (ignorado pelo git). A compilação falha se a chave existir e faltar a palavra-passe.
+  - Chave anexada copiada para `keystore/stock.jks`. É idêntica byte a byte à anterior. Alias `stock` confirmado e SHA-256 do certificado igual ao APK anterior (`EF:DF:0A:A4:…:2C:78:57`).
+  - Versão 1.2 (versionCode 3). APK assinado com essa chave (v2) e copiado para `dist/StockSnackBar.apk`.
+- **Ficheiros:** `app/src/main/assets/index.html`, `app/build.gradle`, `README.md`, `dist/StockSnackBar.apk` (alterados).
+- **Estado:**
+  - Compila. Assinatura verificada com `apksigner`: o certificado é o mesmo, por isso a atualização instala por cima.
+  - 39 verificações automáticas em Chromium contra uma imitação local da Firebase, com dois "telemóveis": todas passam e sem erros JS. Cobrem:
+    - criar 3 utilizadores, recusar o 4.º, recusar nomes repetidos e curtos, trocar de utilizador, lembrar após recarregar;
+    - renomear (incluindo para um nome repetido) e apagar com confirmação; o histórico mantém o nome apagado;
+    - o outro telemóvel vê os mesmos utilizadores e o histórico com o utilizador certo;
+    - toques simultâneos somam-se; modo offline com envio quando a rede volta;
+    - limite de 200 (local e Firebase).
+  - **Não testado:** num telemóvel Android real (ponte Java, botão voltar, teclado) e com a Firebase verdadeira.
+- **Problemas:**
+  - Encontrado e corrigido: os botões "Novo utilizador" e "Voltar" não ficavam escondidos (o CSS de `.btn` anulava `hidden`).
+  - Encontrado e corrigido: a atualização da partilha a cada 4 s anulava o "Confirmar apagar" no ecrã de utilizadores.
+  - A palavra-passe antiga continua no histórico do git (commit `5e7c117`). Não reescrevi o histórico, porque isso exige force-push. O risco é limitado, porque o ficheiro da chave nunca esteve no git.
+  - Não há segurança nos utilizadores, por desenho: qualquer pessoa pode escolher qualquer nome.
+- **Próximos passos:**
+  1. Instalar a v1.2 por cima nos telemóveis e repetir os testes principais com a Firebase real.
+  2. Mudar a palavra-passe da chave (`keytool -storepasswd` e `-keypasswd`): mantém o mesmo certificado e as atualizações continuam a instalar por cima.
+  3. Opcional: registar também a criação, mudança de nome e apagamento de utilizadores no histórico.
 
 ---
 
