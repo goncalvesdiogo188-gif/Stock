@@ -7,7 +7,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Insets;
 import android.net.Uri;
@@ -43,9 +42,9 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
 
-        boolean night = (getResources().getConfiguration().uiMode
-                & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
-        int bg = night ? Color.parseColor("#0E1411") : Color.parseColor("#F3F6F2");
+        // A interface usa sempre o tema escuro (laranja e preto).
+        boolean night = true;
+        int bg = Color.parseColor("#0E0E0E");
 
         FrameLayout root = new FrameLayout(this);
         root.setBackgroundColor(bg);
