@@ -43,3 +43,12 @@ A palavra-passe da chave **nunca** vai para o git: defina a variável de ambient
 ## Utilizadores e histórico
 
 Até 3 utilizadores (só nome, sem palavra-passe), escolhidos num ecrã inicial; o telemóvel lembra o último. Cada alteração de stock (+/−, editar, novo, apagar, repor exemplo, texto colado) fica no **Histórico** com utilizador, material, quantidade antes/depois, data e hora (últimas 200). Com a partilha ligada, utilizadores e histórico ficam em `lojas/<código>/users` e `lojas/<código>/history`, gravados no mesmo pedido que a alteração do stock.
+
+## Páginas
+
+- **Avisos** (abre aqui): quadro de avisos da equipa (até 300 caracteres), com fixar, "Resolvido" e apagar em dois toques. Guarda no máximo 50; saem primeiro os resolvidos mais antigos. Ponto laranja no separador quando há avisos novos de outros utilizadores. Partilhados em `lojas/<código>/notices` (um nó por aviso); não entram no histórico do stock.
+- **Stock**: pesquisa, famílias, − e +, nota por produto; os mais mexidos primeiro.
+- **Histórico**: alterações de stock com filtro por utilizador.
+- **Mais**: lista de compras manual (partilhada em `lojas/<código>/shopping`), receber mercadoria, contagem rápida, enviar/receber stock em texto, partilha, utilizadores e dados de exemplo.
+
+A app não usa mínimos nem sugere compras. Produtos antigos com o campo `min` carregam normalmente; o valor é mantido nos dados mas não é usado. O texto de enviar/receber stock tem o formato `Família | Nome | quantidade unidade` (textos antigos com `| min N` continuam a ser aceites).
