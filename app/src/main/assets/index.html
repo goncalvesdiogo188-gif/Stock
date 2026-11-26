@@ -56,6 +56,7 @@
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
@@ -274,6 +275,44 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
 .sync-strip.show { display: block; }
 .sync-strip.error { background: var(--danger-bg); color: var(--danger-text); }
 
+/* Utilizadores */
+.user-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; }
+.user-chip { flex: 1 1 100%; min-width: 0; font-size: 16px; color: var(--muted); overflow-wrap: anywhere; }
+.user-chip b { color: var(--text); font-size: 18px; }
+.btn-sm { min-height: 46px; padding: 0 14px; font-size: 16px; border-radius: 12px; flex: 1 1 0; }
+.user-screen {
+  position: fixed; inset: 0; z-index: 40; background: var(--bg); overflow-y: auto; display: none;
+  padding: calc(env(safe-area-inset-top) + 28px) calc(16px + env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 28px) calc(16px + env(safe-area-inset-left));
+}
+.user-screen.open { display: block; }
+.user-screen .inner { max-width: 520px; margin: 0 auto; }
+.user-screen .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
+.user-screen h2 { font-size: 22px; margin: 0 0 14px; }
+.user-big {
+  width: 100%; min-height: 70px; font-size: 22px; font-weight: 750; margin-bottom: 12px; border-radius: 16px;
+  background: var(--surface); border: 2px solid var(--line); color: var(--text); box-shadow: var(--shadow); overflow-wrap: anywhere; padding: 8px 16px;
+}
+.user-big:active { border-color: var(--primary); }
+.user-big.current { border-color: var(--primary); }
+.user-new { width: 100%; min-height: 64px; font-size: 19px; border-style: dashed; }
+.user-form { background: var(--surface); border: 2px solid var(--line); border-radius: 16px; padding: 14px; margin-bottom: 12px; }
+.user-form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.user-manage-row { background: var(--surface); border: 2px solid var(--line); border-radius: 16px; padding: 12px; margin-bottom: 10px; }
+.user-manage-row .nm { font-weight: 750; font-size: 19px; overflow-wrap: anywhere; margin-bottom: 10px; }
+.user-manage-row .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.muted-note { color: var(--muted); font-size: 15px; margin: 6px 0 14px; }
+.user-links { margin-top: 20px; display: grid; gap: 10px; }
+
+/* Histórico */
+.hist-list { margin-top: 4px; }
+.hist-day { font-weight: 800; color: var(--accent-text); font-size: 14px; text-transform: uppercase; letter-spacing: .05em; margin: 16px 0 4px; }
+.hist-row { padding: 10px 0; border-bottom: 1px solid var(--line); }
+.hist-top { display: flex; gap: 10px; align-items: baseline; justify-content: space-between; }
+.hist-item { font-weight: 700; font-size: 17px; overflow-wrap: anywhere; min-width: 0; }
+.hist-chg { font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; font-size: 16px; }
+.hist-meta { color: var(--muted); font-size: 14px; margin-top: 2px; }
+.up { color: #2e9d5f; } .down { color: var(--danger); }
+
 /* Aviso */
 .toast {
   position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom)); transform: translateX(-50%) translateY(20px);
@@ -300,6 +339,11 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
         <h1>Stock do snack bar</h1>
         <div class="summary" id="summary"></div>
       </div>
+    </div>
+    <div class="user-row">
+      <div class="user-chip">Utilizador: <b id="userName"></b></div>
+      <button class="btn btn-soft btn-sm" id="btnSwitch">Trocar utilizador</button>
+      <button class="btn btn-soft btn-sm" id="btnHist">Histórico</button>
     </div>
     <button class="sync-pill" id="syncPill"><span class="dot"></span><span id="syncPillText"></span></button>
 
@@ -400,6 +444,56 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
       <button type="button" class="btn btn-primary full" id="shareApply">Aplicar texto colado</button>
       <button type="button" class="btn btn-outline full" id="shareClose">Fechar</button>
     </div>
+  </div>
+</div>
+
+<!-- Ecrã inicial: escolher utilizador -->
+<div class="user-screen" id="userScreen" role="dialog" aria-modal="true" aria-labelledby="userTitle">
+  <div class="inner">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="width:28px;height:28px">
+          <path d="M4 9h12v4a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9z"/><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H15.5"/>
+          <path d="M7.5 3.5c0 1 1 1.2 1 2.3M11.5 3.5c0 1 1 1.2 1 2.3"/><path d="M3 21h15"/>
+        </svg>
+      </div>
+      <h1>Stock do snack bar</h1>
+    </div>
+    <h2 id="userTitle">Quem está a usar a app?</h2>
+    <div id="userPick"></div>
+    <div id="userManage"></div>
+    <div class="user-form" id="userNewForm" hidden>
+      <div class="field" style="margin-bottom:10px">
+        <label for="userNewName">Nome do novo utilizador</label>
+        <input id="userNewName" type="text" maxlength="20" autocomplete="off" autocapitalize="words" enterkeyhint="done">
+        <div class="err" id="userNewErr"></div>
+      </div>
+      <div class="row">
+        <button type="button" class="btn btn-primary" id="userNewSave">Criar</button>
+        <button type="button" class="btn btn-soft" id="userNewCancel">Cancelar</button>
+      </div>
+    </div>
+    <button type="button" class="btn btn-outline user-new" id="userNewBtn">+ Novo utilizador</button>
+    <p class="muted-note" id="userLimit" hidden>Máximo de 3 utilizadores. Para criar outro, apague um em “Gerir utilizadores”.</p>
+    <div class="user-links">
+      <button type="button" class="btn btn-soft" id="userManageBtn">Gerir utilizadores</button>
+      <button type="button" class="btn btn-soft" id="userSyncBtn">Ligar a um stock partilhado</button>
+      <button type="button" class="btn btn-outline" id="userBack">Voltar</button>
+    </div>
+    <p class="muted-note" id="userSyncNote"></p>
+  </div>
+</div>
+
+<!-- Janela: histórico -->
+<div class="overlay" id="histOverlay" role="dialog" aria-modal="true" aria-labelledby="histTitle">
+  <div class="sheet">
+    <h2 id="histTitle">Histórico</h2>
+    <div class="field">
+      <label for="histFilter">Utilizador</label>
+      <select id="histFilter"></select>
+    </div>
+    <div class="hist-list" id="histList"></div>
+    <button type="button" class="btn btn-outline btn-block" id="histClose">Fechar</button>
   </div>
 </div>
 
@@ -555,6 +649,34 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
   }
   // sync: { url: ligação da loja na Firebase ('' = só local), queue: alterações por enviar, rev: versão conhecida }
   var sync = { url: '', queue: [], rev: null };
+  var MAX_USERS = 3, MAX_HIST = 200;
+  var users = [];   // [{ id, name, created }] (partilhados quando a partilha está ligada)
+  var me = '';      // id do utilizador atual (só neste telemóvel)
+  var history = []; // alterações, mais recente primeiro
+  function sanitizeUsers(src) {
+    var out = [];
+    if (src && typeof src === 'object') {
+      (Array.isArray(src) ? src : Object.keys(src).map(function (k) { var u = src[k]; return u && typeof u === 'object' ? { id: k, name: u.name, created: u.created } : null; }))
+        .forEach(function (u) {
+          if (!u || typeof u.name !== 'string' || !u.name.trim()) return;
+          out.push({ id: String(u.id), name: u.name.trim().slice(0, 20), created: Number(u.created) || 0 });
+        });
+    }
+    return out.sort(function (a, b) { return a.created - b.created || (a.id < b.id ? -1 : 1); });
+  }
+  function sanitizeHistory(src) {
+    var out = [];
+    if (src && typeof src === 'object') {
+      (Array.isArray(src) ? src : Object.keys(src).map(function (k) { var h = src[k]; return h && typeof h === 'object' ? Object.assign({}, h, { id: k }) : null; }))
+        .forEach(function (h) {
+          if (!h || !h.ts || typeof h.act !== 'string') return;
+          out.push({ id: String(h.id), ts: Number(h.ts), uid: String(h.uid || ''), user: String(h.user || '?'), item: String(h.item || ''),
+            iid: String(h.iid || ''), unit: String(h.unit || ''), act: h.act, note: h.note ? String(h.note) : '',
+            before: typeof h.before === 'number' ? h.before : null, after: typeof h.after === 'number' ? h.after : null });
+        });
+    }
+    return out.sort(function (a, b) { return b.ts - a.ts; });
+  }
   function load() {
     var raw = null;
     try { if (bridge && bridge.load) raw = bridge.load(); } catch (e) {}
@@ -568,13 +690,16 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
           sync.queue = Array.isArray(obj.sync.queue) ? obj.sync.queue : [];
           sync.rev = obj.sync.rev == null ? null : obj.sync.rev;
         }
+        users = sanitizeUsers(obj.users);
+        me = typeof obj.me === 'string' ? obj.me : '';
+        history = sanitizeHistory(obj.history).slice(0, MAX_HIST);
         if (d) return d;
       } catch (e) {}
     }
     return sampleItems();
   }
   function save() {
-    var raw = JSON.stringify({ v: 2, items: items, sync: sync });
+    var raw = JSON.stringify({ v: 3, items: items, sync: sync, users: users, me: me, history: history });
     try { if (bridge && bridge.save) bridge.save(raw); } catch (e) {}
     try { localStorage.setItem(STORE_KEY, raw); } catch (e) {}
   }
@@ -601,6 +726,8 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
 
   // ---------- desenhar ----------
   function render() {
+    var cu = users.find(function (u) { return u.id === me; });
+    $('userName').textContent = cu ? cu.name : '—';
     var total = items.length;
     var toBuy = items.filter(needsRestock).length;
     elSummary.innerHTML = total + (total === 1 ? ' material' : ' materiais') + ' · ' +
@@ -715,24 +842,27 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
   function jsonOf(r) { try { return JSON.parse(r.text); } catch (e) { return undefined; } }
   function httpOk(r) { return r.status >= 200 && r.status < 300; }
 
-  function enqueueSet(path, value) {
+  // extra: caminhos adicionais gravados no mesmo pedido (ex.: entrada do histórico)
+  function enqueueSet(path, value, extra) {
     if (!syncOn()) return;
-    if (path === 'items') sync.queue = sync.queue.slice(0, syncRt.inflight ? 1 : 0); // substitui tudo
-    sync.queue.push({ t: 'set', path: path, value: value });
+    sync.queue.push({ t: 'set', path: path, value: value, extra: extra || null });
     save(); kick();
   }
-  function enqueueInc(id, d) {
+  function enqueueInc(id, d, extra) {
     if (!syncOn()) return;
     var last = sync.queue[sync.queue.length - 1];
     var lastBusy = syncRt.inflight && sync.queue.length === 1;
-    if (last && last.t === 'inc' && last.id === id && !lastBusy) last.d = round(last.d + d);
-    else sync.queue.push({ t: 'inc', id: id, d: d });
+    if (last && last.t === 'inc' && last.id === id && !lastBusy) {
+      last.d = round(last.d + d);
+      if (extra) last.extra = Object.assign(last.extra || {}, extra);
+    } else sync.queue.push({ t: 'inc', id: id, d: d, extra: extra || null });
     save(); kick();
   }
   function opPatch(op) {
     var patch = {};
+    if (op.extra) Object.keys(op.extra).forEach(function (k) { patch[k] = op.extra[k]; });
     if (op.t === 'inc') patch['items/' + op.id + '/qty'] = { '.sv': { increment: op.d } };
-    else patch[op.path] = op.value;
+    else if (op.path) patch[op.path] = op.value;
     patch.rev = { '.sv': { increment: 1 } };
     return patch;
   }
@@ -748,7 +878,8 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
     else setSync('error', 'Erro da base de dados (código ' + r.status + '). Vai tentar outra vez.');
   }
 
-  function applyRemote(obj, rev) {
+  function applyRemote(data, rev) {
+    var obj = data && data.items;
     var list = [], fixes = [];
     if (obj && typeof obj === 'object') {
       Object.keys(obj).forEach(function (k) {
@@ -760,12 +891,28 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
       });
     }
     items = list;
+    users = sanitizeUsers(data && data.users);
+    if (users.length > MAX_USERS) { // criados ao mesmo tempo em telemóveis diferentes: ficam os 3 mais antigos
+      users.slice(MAX_USERS).forEach(function (u) { fixes.push(['users/' + u.id, null]); });
+      users = users.slice(0, MAX_USERS);
+    }
+    history = sanitizeHistory(data && data.history);
+    if (history.length > MAX_HIST) {
+      history.slice(MAX_HIST).forEach(function (h) { fixes.push(['history/' + h.id, null]); });
+      history = history.slice(0, MAX_HIST);
+    }
     sync.rev = rev;
     save();
     var sl = elTabs.scrollLeft;
     render();
     elTabs.scrollLeft = sl;
+    if ($('histOverlay').classList.contains('open')) renderHistory();
+    if (renderSyncUi.lastOn !== syncOn()) {
+      renderSyncUi.lastOn = syncOn();
+      if ($('userScreen').classList.contains('open')) renderUserScreen();
+    }
     fixes.forEach(function (f) { enqueueSet(f[0], f[1]); });
+    if (!currentUser()) showUserScreen();
   }
 
   async function kick() {
@@ -792,7 +939,7 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
         var rev = jsonOf(r1);
         if (rev === undefined) rev = null;
         if (rev !== sync.rev) {
-          var r2 = await http('GET', url + '/items.json');
+          var r2 = await http('GET', url + '.json');
           if (sync.url !== url) return;
           if (!httpOk(r2)) { syncFail(r2); return; }
           if (sync.queue.length) { syncRt.again = true; continue; }
@@ -808,6 +955,10 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
 
   function renderSyncUi() {
     var pill = $('syncPill');
+    if (renderSyncUi.lastOn !== syncOn()) {
+      renderSyncUi.lastOn = syncOn();
+      if ($('userScreen').classList.contains('open')) renderUserScreen();
+    }
     if (!syncOn()) {
       pill.classList.remove('show');
       $('syncStrip').className = 'sync-strip';
@@ -859,8 +1010,15 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
     if (btn.dataset.armed === '1' && pendingConnect) {
       var pc = pendingConnect; pendingConnect = null;
       disarm(btn);
+      var localUsers = users.slice();
       sync = { url: pc.shop, queue: [], rev: null };
-      applyRemote(pc.data.items, pc.data.rev == null ? null : pc.data.rev);
+      applyRemote(pc.data, pc.data.rev == null ? null : pc.data.rev);
+      if (!users.length && localUsers.length) { // a partilha ainda não tem utilizadores: enviar os deste telemóvel
+        users = localUsers;
+        users.forEach(function (u) { enqueueSet('users/' + u.id, { name: u.name, created: u.created }); });
+        save(); render();
+      }
+      if (currentUser()) hideUserScreen(); else showUserScreen();
       setSync('ok');
       toast('Ligado ao stock partilhado');
       kick();
@@ -895,7 +1053,7 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
       return;
     }
     // base vazia: criar a partilha com o stock deste telemóvel
-    var r2 = await http('PUT', shop + '.json', { items: itemsMap(), rev: 1 });
+    var r2 = await http('PUT', shop + '.json', { items: itemsMap(), users: usersMap(), history: historyMap(), rev: 1 });
     if (!httpOk(r2)) { err.textContent = 'Não foi possível criar a partilha (código ' + r2.status + ').'; return; }
     sync = { url: shop, queue: [], rev: 1 };
     save();
@@ -931,6 +1089,240 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
       toast('Partilha desligada. O stock fica só neste telemóvel.');
     });
   });
+
+
+  // ---------- utilizadores ----------
+  function currentUser() { return users.find(function (u) { return u.id === me; }) || null; }
+  function usersMap() { var m = {}; users.forEach(function (u) { m[u.id] = { name: u.name, created: u.created }; }); return m; }
+  function cleanName(n) { return String(n || '').trim().replace(/\s+/g, ' '); }
+  function nameError(name, exceptId) {
+    if (name.length < 2) return 'O nome tem de ter pelo menos 2 letras.';
+    if (name.length > 20) return 'O nome pode ter no máximo 20 letras.';
+    if (users.some(function (u) { return u.id !== exceptId && norm(u.name) === norm(name); })) return 'Já existe um utilizador com esse nome.';
+    return '';
+  }
+  function selectUser(id) {
+    me = id; save();
+    hideUserScreen();
+    render();
+    var u = currentUser();
+    if (u) toast('Olá, ' + u.name);
+  }
+  function createUser(name) {
+    name = cleanName(name);
+    if (users.length >= MAX_USERS) return 'Já existem 3 utilizadores (o máximo).';
+    var e = nameError(name, null);
+    if (e) return e;
+    var u = { id: 'u' + newId(), name: name, created: Date.now() };
+    users.push(u);
+    enqueueSet('users/' + u.id, { name: u.name, created: u.created });
+    selectUser(u.id);
+    return '';
+  }
+  function renameUser(id, name) {
+    name = cleanName(name);
+    var e = nameError(name, id);
+    if (e) return e;
+    var u = users.find(function (x) { return x.id === id; });
+    if (!u) return 'Utilizador não encontrado.';
+    u.name = name;
+    enqueueSet('users/' + id + '/name', name);
+    save(); render(); renderUserScreen();
+    return '';
+  }
+  function deleteUser(id) {
+    users = users.filter(function (u) { return u.id !== id; });
+    enqueueSet('users/' + id, null);
+    if (me === id) me = '';
+    save(); render(); renderUserScreen();
+  }
+
+  var userUi = { manage: false, renaming: '', adding: false };
+  function showUserScreen() {
+    if (!$('userScreen').classList.contains('open')) userUi = { manage: false, renaming: '', adding: !users.length };
+    $('userScreen').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    renderUserScreen();
+  }
+  function hideUserScreen() {
+    $('userScreen').classList.remove('open');
+    if (!document.querySelector('.overlay.open')) document.body.style.overflow = '';
+  }
+  function renderUserScreen() {
+    var full = users.length >= MAX_USERS;
+    if (full) userUi.adding = false;
+    if (!users.length) userUi.manage = false;
+    $('userTitle').textContent = users.length ? 'Quem está a usar a app?' : 'Crie o primeiro utilizador';
+    var renInput = document.querySelector('#userManage .ren-input');
+    var renKeep = renInput ? { id: renInput.id, val: renInput.value, focus: document.activeElement === renInput } : null;
+    $('userPick').innerHTML = userUi.manage ? '' : users.map(function (u) {
+      return '<button type="button" class="user-big' + (u.id === me ? ' current' : '') + '" data-uid="' + esc(u.id) + '">' + esc(u.name) + '</button>';
+    }).join('');
+    $('userManage').innerHTML = !userUi.manage ? '' : users.map(function (u) {
+      if (userUi.renaming === u.id) {
+        return '<div class="user-manage-row"><div class="field" style="margin-bottom:10px"><label for="ren_' + esc(u.id) + '">Novo nome</label>' +
+          '<input id="ren_' + esc(u.id) + '" class="ren-input" type="text" maxlength="20" autocomplete="off" value="' + esc(u.name) + '">' +
+          '<div class="err ren-err"></div></div><div class="row">' +
+          '<button type="button" class="btn btn-primary" data-ren-save="' + esc(u.id) + '">Guardar</button>' +
+          '<button type="button" class="btn btn-soft" data-ren-cancel="1">Cancelar</button></div></div>';
+      }
+      return '<div class="user-manage-row"><div class="nm">' + esc(u.name) + (u.id === me ? ' <span class="muted-note">(atual)</span>' : '') + '</div><div class="row">' +
+        '<button type="button" class="btn btn-soft" data-ren="' + esc(u.id) + '">Mudar nome</button>' +
+        '<button type="button" class="btn btn-danger" data-del="' + esc(u.id) + '">Apagar</button></div></div>';
+    }).join('');
+    $('userNewForm').hidden = !userUi.adding;
+    $('userNewBtn').hidden = full || userUi.adding || userUi.manage;
+    $('userLimit').hidden = !full || userUi.manage;
+    $('userManageBtn').hidden = !users.length || userUi.adding;
+    $('userManageBtn').textContent = userUi.manage ? 'Terminar gestão' : 'Gerir utilizadores';
+    $('userBack').hidden = !currentUser();
+    $('userSyncBtn').hidden = syncOn();
+    $('userSyncNote').textContent = syncOn()
+      ? 'Os utilizadores são partilhados por todos os telemóveis ligados.'
+      : 'Os utilizadores ficam só neste telemóvel. Se o stock é partilhado, ligue primeiro este telemóvel à partilha.';
+    if (userUi.renaming) {
+      var inp = document.getElementById('ren_' + userUi.renaming);
+      if (inp && renKeep && renKeep.id === inp.id) inp.value = renKeep.val; // não perder o que estava a ser escrito
+      if (inp && (!renKeep || renKeep.focus)) setTimeout(function () { inp.focus(); }, 30);
+    }
+  }
+  $('userPick').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-uid]');
+    if (b) selectUser(b.dataset.uid);
+  });
+  $('userManage').addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    if (b.dataset.ren) { userUi.renaming = b.dataset.ren; renderUserScreen(); return; }
+    if (b.dataset.renCancel) { userUi.renaming = ''; renderUserScreen(); return; }
+    if (b.dataset.renSave) {
+      var row = b.closest('.user-manage-row');
+      var err = renameUser(b.dataset.renSave, row.querySelector('.ren-input').value);
+      if (err) { row.querySelector('.ren-err').textContent = err; return; }
+      userUi.renaming = ''; renderUserScreen(); toast('Nome alterado');
+      return;
+    }
+    if (b.dataset.del) {
+      var id = b.dataset.del;
+      twoStep(b, 'Confirmar apagar', function () { deleteUser(id); toast('Utilizador apagado'); });
+    }
+  });
+  $('userManage').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.target.classList.contains('ren-input')) {
+      var b = e.target.closest('.user-manage-row').querySelector('[data-ren-save]');
+      if (b) b.click();
+    }
+  });
+  $('userNewBtn').addEventListener('click', function () {
+    userUi.adding = true; $('userNewName').value = ''; $('userNewErr').textContent = '';
+    renderUserScreen();
+    setTimeout(function () { $('userNewName').focus(); }, 30);
+  });
+  $('userNewCancel').addEventListener('click', function () {
+    userUi.adding = false; renderUserScreen();
+  });
+  $('userNewSave').addEventListener('click', function () {
+    var err = createUser($('userNewName').value);
+    $('userNewErr').textContent = err;
+    if (!err) { userUi.adding = false; $('userNewName').value = ''; }
+  });
+  $('userNewName').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('userNewSave').click(); });
+  $('userNewName').addEventListener('input', function () { $('userNewErr').textContent = ''; });
+  $('userManageBtn').addEventListener('click', function () {
+    userUi.manage = !userUi.manage; userUi.renaming = ''; userUi.adding = false; renderUserScreen();
+  });
+  $('userSyncBtn').addEventListener('click', function () { $('btnSync').click(); });
+  $('userBack').addEventListener('click', function () { if (currentUser()) hideUserScreen(); });
+  $('btnSwitch').addEventListener('click', showUserScreen);
+
+  // ---------- histórico ----------
+  var ACT_LABEL = { adj: 'Ajuste − / +', edit: 'Editado', 'new': 'Novo material', del: 'Apagado', reset: 'Repor dados de exemplo', 'import': 'Texto colado aplicado' };
+  function histData(h) {
+    var d = { ts: h.ts, uid: h.uid, user: h.user, item: h.item, iid: h.iid, unit: h.unit, act: h.act };
+    if (h.before != null) d.before = h.before;
+    if (h.after != null) d.after = h.after;
+    if (h.note) d.note = h.note;
+    return d;
+  }
+  function historyMap() { var m = {}; history.forEach(function (h) { m[h.id] = histData(h); }); return m; }
+  // Regista uma alteração; devolve os caminhos a gravar na Firebase juntamente com a alteração do stock.
+  function logChange(act, itemName, iid, unit, before, after, note) {
+    var u = currentUser();
+    var h = { id: 'h' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7), ts: Date.now(),
+      uid: u ? u.id : '', user: u ? u.name : '?', item: itemName, iid: iid || '', unit: unit || '', act: act,
+      before: before == null ? null : before, after: after == null ? null : after, note: note || '' };
+    history.unshift(h);
+    var extra = {};
+    extra['history/' + h.id] = histData(h);
+    history.splice(MAX_HIST).forEach(function (old) { extra['history/' + old.id] = null; });
+    return extra;
+  }
+  // + e −: toques seguidos no mesmo material (mesmo utilizador, menos de 1 minuto) juntam-se numa só entrada
+  function logAdjust(p, before) {
+    var h = history[0];
+    if (h && h.act === 'adj' && h.uid === me && h.iid === p.id && Date.now() - h.ts < 60000) {
+      var extra = {};
+      h.after = p.qty; h.ts = Date.now(); h.item = p.name;
+      if (h.after === h.before) { history.shift(); extra['history/' + h.id] = null; }
+      else extra['history/' + h.id] = histData(h);
+      return extra;
+    }
+    return logChange('adj', p.name, p.id, p.unit, before, p.qty);
+  }
+  function dayLabel(ts) {
+    var d = new Date(ts), t = new Date();
+    var key = function (x) { return x.getFullYear() + '-' + x.getMonth() + '-' + x.getDate(); };
+    if (key(d) === key(t)) return 'Hoje';
+    var y = new Date(t.getTime() - 86400000);
+    if (key(d) === key(y)) return 'Ontem';
+    return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear();
+  }
+  function histFilterOptions() {
+    var opts = [{ v: '', l: 'Todos os utilizadores' }];
+    users.forEach(function (u) { opts.push({ v: 'u:' + u.id, l: u.name }); });
+    var seen = {};
+    history.forEach(function (h) {
+      if (users.some(function (u) { return u.id === h.uid; })) return;
+      if (seen[h.user]) return;
+      seen[h.user] = 1;
+      opts.push({ v: 'n:' + h.user, l: h.user + ' (apagado)' });
+    });
+    return opts;
+  }
+  function renderHistory() {
+    var sel = $('histFilter'), cur = sel.value;
+    var opts = histFilterOptions();
+    if (!opts.some(function (o) { return o.v === cur; })) cur = '';
+    sel.innerHTML = opts.map(function (o) { return '<option value="' + esc(o.v) + '">' + esc(o.l) + '</option>'; }).join('');
+    sel.value = cur;
+    var list = history.filter(function (h) {
+      if (!cur) return true;
+      if (cur.indexOf('u:') === 0) return h.uid === cur.slice(2);
+      return h.user === cur.slice(2) && !users.some(function (u) { return u.id === h.uid; });
+    });
+    if (!list.length) { $('histList').innerHTML = '<div class="empty">Ainda não há alterações registadas.</div>'; return; }
+    var html = '', lastDay = '';
+    list.forEach(function (h) {
+      var day = dayLabel(h.ts);
+      if (day !== lastDay) { html += '<div class="hist-day">' + esc(day) + '</div>'; lastDay = day; }
+      var d = new Date(h.ts);
+      var unit = (h.act === 'reset' || h.act === 'import') ? ' materiais' : (h.unit ? ' ' + h.unit : '');
+      var chg = (h.before == null ? '—' : fmt(h.before)) + ' → ' + (h.after == null ? '—' : fmt(h.after)) + esc(unit);
+      var delta = '';
+      if (h.before != null && h.after != null && h.before !== h.after && h.act !== 'reset' && h.act !== 'import') {
+        var dv = round(h.after - h.before);
+        delta = ' <span class="' + (dv > 0 ? 'up' : 'down') + '">(' + (dv > 0 ? '+' : '−') + fmt(Math.abs(dv)) + ')</span>';
+      }
+      html += '<div class="hist-row"><div class="hist-top"><div class="hist-item">' + esc(h.item) + '</div>' +
+        '<div class="hist-chg">' + chg + delta + '</div></div>' +
+        '<div class="hist-meta"><b>' + esc(h.user) + '</b> · ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ' · ' +
+        esc(ACT_LABEL[h.act] || h.act) + (h.note ? ' · ' + esc(h.note) : '') + '</div></div>';
+    });
+    $('histList').innerHTML = html;
+  }
+  $('btnHist').addEventListener('click', function () { renderHistory(); openOverlay($('histOverlay')); $('histOverlay').querySelector('.sheet').scrollTop = 0; });
+  $('histFilter').addEventListener('change', renderHistory);
+  $('histClose').addEventListener('click', function () { closeOverlay($('histOverlay')); });
 
   // ---------- copiar / abrir ----------
   function copyText(text) {
@@ -1089,12 +1481,21 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
     var data = { name: name, family: $('fFamily').value, qty: qty, unit: $('fUnit').value, min: min };
     if (editing) {
       var p = items.find(function (x) { return x.id === editing; });
-      if (p) { Object.assign(p, data); enqueueSet('items/' + p.id, itemData(p)); }
+      if (p) {
+        var notes = [];
+        if (p.name !== data.name) notes.push('nome antes: ' + p.name);
+        if (p.min !== data.min) notes.push('mínimo ' + fmt(p.min) + ' → ' + fmt(data.min));
+        if (p.family !== data.family) notes.push('família ' + p.family + ' → ' + data.family);
+        if (p.unit !== data.unit) notes.push('unidade ' + p.unit + ' → ' + data.unit);
+        var oldQty = p.qty;
+        Object.assign(p, data);
+        enqueueSet('items/' + p.id, itemData(p), logChange('edit', p.name, p.id, p.unit, oldQty, p.qty, notes.join(', ')));
+      }
       toast('Guardado');
     } else {
       data.id = newId();
       items.push(data);
-      enqueueSet('items/' + data.id, itemData(data));
+      enqueueSet('items/' + data.id, itemData(data), logChange('new', data.name, data.id, data.unit, null, data.qty));
       toast('Material adicionado');
     }
     save(); render();
@@ -1104,8 +1505,9 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
   $('editDelete').addEventListener('click', function () {
     var btn = this;
     twoStep(btn, 'Confirmar apagar', function () {
+      var gone = items.find(function (x) { return x.id === editing; });
       items = items.filter(function (x) { return x.id !== editing; });
-      enqueueSet('items/' + editing, null);
+      enqueueSet('items/' + editing, null, gone ? logChange('del', gone.name, gone.id, gone.unit, gone.qty, null) : null);
       save(); render();
       closeOverlay($('editOverlay'));
       toast('Material apagado');
@@ -1143,8 +1545,9 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
       // juntar duplicados (o último ganha)
       var map = {};
       res.items.forEach(function (p) { map[norm(p.name)] = p; });
+      var countBefore = items.length;
       items = Object.keys(map).map(function (k) { return map[k]; });
-      enqueueSet('items', itemsMap());
+      enqueueSet('items', itemsMap(), logChange('import', 'Todos os materiais', '', '', countBefore, items.length));
       save(); render();
       closeOverlay($('shareOverlay'));
       toast('Stock atualizado: ' + items.length + ' materiais');
@@ -1161,6 +1564,10 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
   window.handleBack = function () {
     var open = document.querySelector('.overlay.open');
     if (open) { closeOverlay(open); return true; }
+    if ($('userScreen').classList.contains('open')) {
+      if (currentUser()) { hideUserScreen(); return true; }
+      return false; // sem utilizador escolhido: o botão voltar sai da app
+    }
     if (state.query) { $('search').value = ''; state.query = ''; $('searchBox').classList.remove('has-text'); renderList(); return true; }
     return false;
   };
@@ -1180,8 +1587,9 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
   });
   $('btnReset').addEventListener('click', function () {
     twoStep(this, syncOn() ? 'Confirmar repor exemplo (apaga o stock em todos os telemóveis)' : 'Confirmar repor exemplo (apaga o stock atual)', function () {
+      var countBefore = items.length;
       items = sampleItems();
-      enqueueSet('items', itemsMap());
+      enqueueSet('items', itemsMap(), logChange('reset', 'Todos os materiais', '', '', countBefore, items.length));
       state.tab = 'Todas'; state.filter = 'all'; state.query = '';
       $('search').value = ''; $('searchBox').classList.remove('has-text');
       $('fAll').setAttribute('aria-pressed', 'true'); $('fLow').setAttribute('aria-pressed', 'false');
@@ -1238,7 +1646,7 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
     var before = p.qty;
     if (act === 'inc') p.qty = round(p.qty + 1);
     if (act === 'dec') p.qty = Math.max(0, round(p.qty - 1));
-    if (p.qty !== before) enqueueInc(p.id, round(p.qty - before));
+    if (p.qty !== before) enqueueInc(p.id, round(p.qty - before), logAdjust(p, before));
     save();
     var sl = elTabs.scrollLeft;
     render();
@@ -1253,6 +1661,7 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
   render();
   save();
   renderSyncUi();
+  if (!currentUser()) showUserScreen();
   kick();
   setInterval(function () { if (syncOn() && !document.hidden) kick(); }, SYNC_POLL_MS);
   window.addEventListener('online', function () { kick(); });

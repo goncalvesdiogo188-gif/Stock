@@ -37,3 +37,9 @@ echo "sdk.dir=/caminho/para/android-sdk" > local.properties
 ```
 
 O APK sai em `app/build/outputs/apk/release/`. Se existir `keystore/stock.jks` (alias `stock`), é usado para assinar; caso contrário usa a chave de debug. Para atualizar a app sem a desinstalar é preciso assinar sempre com a mesma chave.
+
+A palavra-passe da chave **nunca** vai para o git: defina a variável de ambiente `STOCK_KS_PASS` ou crie `keystore/keystore.properties` com a linha `storePassword=...` (a pasta `keystore/` está no `.gitignore`).
+
+## Utilizadores e histórico
+
+Até 3 utilizadores (só nome, sem palavra-passe), escolhidos num ecrã inicial; o telemóvel lembra o último. Cada alteração de stock (+/−, editar, novo, apagar, repor exemplo, texto colado) fica no **Histórico** com utilizador, material, quantidade antes/depois, data e hora (últimas 200). Com a partilha ligada, utilizadores e histórico ficam em `lojas/<código>/users` e `lojas/<código>/history`, gravados no mesmo pedido que a alteração do stock.

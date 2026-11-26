@@ -10,19 +10,27 @@ android {
         applicationId 'pt.snackbar.stock'
         minSdk 26
         targetSdk 35
-        versionCode 2
-        versionName '1.1'
+        versionCode 3
+        versionName '1.2'
     }
 
-    // Assinatura: usa keystore/stock.jks se existir (não incluída no git).
+    // Assinatura: keystore/stock.jks (fora do git). A palavra-passe vem da variável de
+    // ambiente STOCK_KS_PASS ou de keystore/keystore.properties (storePassword=...), também fora do git.
     def ks = rootProject.file('keystore/stock.jks')
+    def ksProps = new Properties()
+    def ksPropsFile = rootProject.file('keystore/keystore.properties')
+    if (ksPropsFile.exists()) ksPropsFile.withInputStream { ksProps.load(it) }
+    def ksPass = System.getenv('STOCK_KS_PASS') ?: ksProps.getProperty('storePassword')
+    if (ks.exists() && !ksPass) {
+        throw new GradleException('Falta a palavra-passe da chave: defina STOCK_KS_PASS ou keystore/keystore.properties')
+    }
     signingConfigs {
         release {
             if (ks.exists()) {
                 storeFile ks
-                storePassword System.getenv('STOCK_KS_PASS') ?: 'snackbar'
+                storePassword ksPass
                 keyAlias 'stock'
-                keyPassword System.getenv('STOCK_KS_PASS') ?: 'snackbar'
+                keyPassword ksPass
             }
         }
     }
