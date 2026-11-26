@@ -1,10 +1,47 @@
 # Relatórios — Stock do snack bar
 
 ## Estado atual do projeto
-- **Funciona (testado em Chromium):** APK v1.2 em `dist/`, com stock offline, partilha opcional via Firebase, até 3 utilizadores e histórico das últimas 200 alterações.
-- **Falta:** testar num telemóvel real e com a base de dados Firebase verdadeira.
+- **Funciona (testado em Chromium):** APK v1.3 em `dist/`, com o novo visual escuro laranja e preto e a navegação em baixo. Tem stock offline, partilha opcional via Firebase, até 3 utilizadores e histórico das últimas 200 alterações.
+- **Falta:** testar num telemóvel real (visual, ícone, margens, teclado) e com a base de dados Firebase verdadeira.
 - **Maior risco:** a partilha e os utilizadores só foram testados contra uma imitação local da Firebase. O comportamento real (regras, PATCH via Java, ponte Android) está por confirmar.
 - **Segurança:** a palavra-passe da chave esteve escrita no `app/build.gradle` (público) até ao commit `60d93c4`. Já foi retirada, mas continua no histórico do git. Recomenda-se mudar a palavra-passe da chave; o certificado mantém-se igual.
+
+---
+
+## 2026-11-26 18:01 — Redesenho visual: escuro, laranja e preto
+- **Pedido:** redesenho visual mais limpo, com as cores laranja e preto, sem mudar funcionalidades nem dados.
+- **Feito:**
+  - **Tema único escuro:** o modo claro foi removido. Fundo `#0e0e0e`, cartões `#1a1a1a`, texto branco.
+    - Laranja `#ff7a00`, com texto preto por cima (contraste ~8:1), só nos botões principais, no item ativo da navegação, no separador ativo e no avatar.
+    - Vermelho (`#ff5a52`) para "a repor" e avisos.
+  - **Ecrã principal:**
+    - Só pesquisa (com botão laranja "+" para novo material), separadores por família e lista.
+    - Cada linha mostra nome, "mín. X" e quantidade grande, com botões − e + de 46 px. Tocar no nome abre a edição (o botão "Editar" foi removido).
+    - "A repor": barra lateral vermelha fina, texto "Baixo"/"Esgotado" a vermelho e um ponto vermelho no separador. Sem contadores amarelos.
+  - **Cabeçalho:** nome do café, resumo "N materiais · X a repor" e o utilizador (avatar e primeiro nome; tocar abre a troca).
+  - **Barra fixa em baixo:** Stock · A repor · Histórico · Mais, com o ativo a laranja. O Histórico passou de janela a vista própria. O botão voltar regressa ao Stock.
+  - **Menu "Mais":** Lista de compras, Enviar ou receber stock, Partilhar entre telemóveis (com o estado), Gerir utilizadores, Trocar utilizador e Repor dados de exemplo (dois toques).
+  - Ecrã de utilizadores e todas as janelas no mesmo estilo. "Gerir utilizadores" abre diretamente em modo de gestão.
+  - Android: o tema é sempre escuro (removido `values-night`) e o fundo da janela é `#0E0E0E`. Ícone: chávena laranja sobre fundo preto.
+  - Versão 1.3 (versionCode 4). Assinado com `keystore/stock.jks`, com a palavra-passe só via variável de ambiente `STOCK_KS_PASS`. O certificado SHA-256 é igual ao anterior.
+- **Ficheiros:** alterados `app/src/main/assets/index.html`, `app/build.gradle`, `app/src/main/java/pt/snackbar/stock/MainActivity.java`, `app/src/main/res/values/themes.xml`, `app/src/main/res/drawable/ic_coffee.xml` e `dist/StockSnackBar.apk`. Apagado `app/src/main/res/values-night/themes.xml`.
+- **Estado:**
+  - Compila. Assinatura verificada.
+  - Verificações em Chromium a 390×844 e 360×640 (32 verificações por medida): todos os ecrãs (inicial, principal, a repor, histórico, Mais, editar, enviar, partilha, gerir utilizadores, repor). Passam todas e sem erros JS. Cobrem:
+    - texto cortado e scroll horizontal;
+    - a barra em baixo não tapa o último produto;
+    - botões − e + com pelo menos 44 px;
+    - funções: pesquisa, separadores, filtros, ajustar, editar, histórico com filtro, lista de compras, aplicar texto, trocar utilizador, repor.
+  - As 39 verificações funcionais anteriores (utilizadores, histórico, partilha simulada com 2 telemóveis, offline, limite 200) foram repetidas com a nova navegação: passam todas.
+  - **Não testado:** num telemóvel real (aspeto do ícone no launcher, barras do sistema, teclado) e com a Firebase verdadeira.
+- **Problemas:**
+  - A 360 px, nomes longos ocupam 2 linhas. Decisão: aceitar, em vez de reduzir os botões abaixo de 46 px.
+  - No cabeçalho só aparece o primeiro nome do utilizador, para o título caber; o nome completo continua no ecrã de utilizadores e no histórico.
+  - A mensagem do commit `94d95b2` diz "v1.4" por engano: a versão é 1.3 (versionCode 4). Não reescrevi o histórico.
+- **Próximos passos:**
+  1. Atualizar os telemóveis e confirmar o aspeto real (ícone, barras do sistema, teclado a abrir na edição).
+  2. Confirmar com a Firebase real que dois telemóveis veem as mesmas alterações.
+  3. Mudar a palavra-passe da chave (continua no histórico do git, ver entrada anterior).
 
 ---
 
