@@ -174,6 +174,57 @@ main { padding-bottom: calc(var(--nav-h) + 72px + env(safe-area-inset-bottom)); 
 .hist-meta b { color: var(--text); font-weight: 650; }
 .up { color: var(--primary); } .down { color: var(--danger-text); }
 
+/* Notas, Início, Compras, Contagem */
+.card-note { color: var(--muted); font-size: 13px; margin-top: 2px; font-style: italic; overflow-wrap: anywhere; }
+.section-title { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 22px 4px 10px; }
+.section-title h3 { margin: 0; font-size: 15px; font-weight: 750; }
+.section-title h3.alert { color: var(--danger-text); }
+.section-title .link-btn { min-height: 40px; padding: 4px; font-size: 15px; }
+.ok-box { background: var(--surface); border-radius: var(--radius); padding: 22px 18px; text-align: center; color: var(--muted); font-size: 16px; }
+.ok-box b { display: block; color: var(--text); font-size: 18px; margin-bottom: 4px; }
+.shop-card {
+  width: 100%; border: 0; text-align: left; border-radius: 20px; background: var(--primary); color: var(--on-primary);
+  padding: 18px 18px; display: flex; align-items: center; gap: 14px; min-height: 84px;
+}
+.shop-card .big { font-size: 34px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.shop-card .txt { flex: 1; font-size: 17px; font-weight: 700; line-height: 1.25; }
+.shop-card .txt small { display: block; font-weight: 600; font-size: 14px; opacity: .75; }
+.shop-card .arrow { font-size: 26px; font-weight: 700; }
+.card-alert { color: var(--danger-text); font-weight: 650; }
+.shop-row { background: var(--surface); border-radius: var(--radius); margin-bottom: 8px; display: flex; align-items: center; gap: 4px; padding: 6px 12px 6px 4px; }
+.shop-row.done { opacity: .5; }
+.shop-row.done .shop-name { text-decoration: line-through; }
+.check {
+  width: 48px; height: 48px; flex: none; border: 0; background: none; display: grid; place-items: center; border-radius: 12px;
+}
+.check span { width: 26px; height: 26px; border-radius: 8px; border: 2px solid var(--surface-3); display: grid; place-items: center; color: var(--on-primary); font-weight: 900; font-size: 16px; }
+.shop-row.done .check span { background: var(--primary); border-color: var(--primary); }
+.shop-main { flex: 1; min-width: 0; padding: 6px 0; }
+.shop-name { font-weight: 650; font-size: 17px; overflow-wrap: anywhere; }
+.shop-meta { color: var(--muted); font-size: 13px; margin-top: 1px; }
+.shop-qty { flex: none; text-align: right; font-weight: 750; font-size: 20px; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.shop-qty small { display: block; font-size: 12px; color: var(--muted); font-weight: 600; }
+.shop-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+.recv-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+.recv-row + .recv-row { border-top: 1px solid var(--line); }
+.recv-name { flex: 1; min-width: 0; font-weight: 650; overflow-wrap: anywhere; }
+.recv-name small { display: block; color: var(--muted); font-weight: 500; font-size: 13px; }
+.recv-row input { width: 92px; min-height: 48px; border-radius: 12px; border: 1.5px solid transparent; background: var(--surface-2); padding: 0 10px; font-size: 18px; text-align: right; outline: none; }
+.recv-row input:focus { border-color: var(--primary); }
+.recv-unit { width: 24px; color: var(--muted); font-size: 14px; }
+.count-step { color: var(--muted); font-size: 14px; font-weight: 650; }
+.count-name { font-size: 24px; font-weight: 750; margin: 6px 0 2px; overflow-wrap: anywhere; }
+.count-fam { color: var(--muted); font-size: 14px; }
+.count-now { background: var(--surface-2); border-radius: 14px; padding: 14px; margin: 16px 0; display: flex; align-items: baseline; justify-content: space-between; }
+.count-now b { font-size: 30px; font-variant-numeric: tabular-nums; }
+.count-input { width: 100%; min-height: 60px; border-radius: 14px; border: 1.5px solid transparent; background: var(--surface-2); padding: 0 16px; font-size: 24px; outline: none; text-align: center; }
+.count-input:focus { border-color: var(--primary); }
+.count-bar { height: 4px; background: var(--surface-2); border-radius: 2px; margin: 8px 0 14px; overflow: hidden; }
+.count-bar i { display: block; height: 100%; background: var(--primary); }
+.diff-row { display: flex; justify-content: space-between; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.diff-row b { font-weight: 650; overflow-wrap: anywhere; min-width: 0; }
+.diff-row span { white-space: nowrap; font-variant-numeric: tabular-nums; }
+
 /* Navegação em baixo */
 .bottom {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; background: rgba(14, 14, 14, .96);
@@ -181,9 +232,9 @@ main { padding-bottom: calc(var(--nav-h) + 72px + env(safe-area-inset-bottom)); 
   padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   border-top: 1px solid var(--line);
 }
-.nav { max-width: 720px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); height: var(--nav-h); }
+.nav { max-width: 720px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, 1fr); height: var(--nav-h); }
 .nav button {
-  border: 0; background: none; color: var(--muted); font-size: 13px; font-weight: 650;
+  border: 0; background: none; color: var(--muted); font-size: 12px; font-weight: 650; padding: 0 2px; white-space: nowrap;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; position: relative; min-height: 48px;
 }
 .nav svg { width: 22px; height: 22px; }
@@ -308,7 +359,17 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
   </div>
 </header>
 
-<section id="stockView">
+<section id="homeView">
+  <main>
+    <div class="wrap">
+      <div id="homeAlerts"></div>
+      <div class="section-title"><h3>Últimas alterações</h3><button class="link-btn" id="homeAllHist">Ver tudo</button></div>
+      <div id="homeRecent"></div>
+    </div>
+  </main>
+</section>
+
+<section id="stockView" hidden>
   <div class="wrap">
     <div class="search-row">
       <div class="search" id="searchBox">
@@ -329,6 +390,15 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
   </main>
 </section>
 
+<section id="shopView" hidden>
+  <main>
+    <div class="wrap">
+      <div class="view-title">Compras</div>
+      <div id="shopList"></div>
+    </div>
+  </main>
+</section>
+
 <section id="histView" hidden>
   <main>
     <div class="wrap">
@@ -345,13 +415,17 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
 <div class="bottom">
   <button class="sync-strip" id="syncStrip"></button>
   <nav class="nav" aria-label="Navegação">
-    <button id="navStock" aria-current="page">
+    <button id="navHome" aria-current="page">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7"/><path d="M6 10v10h12V10"/></svg>
+      Início
+    </button>
+    <button id="navStock">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="2"/><rect x="3" y="14" width="18" height="6" rx="2"/></svg>
       Stock
     </button>
-    <button id="navLow">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M6 10l6 6 6-6"/><path d="M5 20h14"/></svg>
-      A repor
+    <button id="navShop">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11h11l2-8H6.2"/><circle cx="9" cy="19.5" r="1.5"/><circle cx="17" cy="19.5" r="1.5"/></svg>
+      Compras
     </button>
     <button id="navHist">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
@@ -369,7 +443,7 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
   <div class="sheet">
     <h2 id="moreTitle">Mais</h2>
     <div class="menu">
-      <button type="button" class="menu-item" id="btnShop">Lista de compras<small>Copiar os materiais a repor</small></button>
+      <button type="button" class="menu-item" id="btnCount">Contagem rápida<small>Contar o stock produto a produto</small></button>
       <button type="button" class="menu-item" id="btnShare">Enviar ou receber stock<small>Texto para WhatsApp ou para colar</small></button>
       <button type="button" class="menu-item" id="btnSync">Partilhar entre telemóveis<small id="syncNote">Os dados ficam guardados só neste telemóvel.</small></button>
       <button type="button" class="menu-item" id="btnUsers">Gerir utilizadores<small>Mudar nome ou apagar</small></button>
@@ -413,12 +487,55 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
       <input id="fMin" type="text" inputmode="decimal" autocomplete="off">
       <div class="err" id="numErr"></div>
     </div>
+    <div class="field">
+      <label for="fNote">Nota (opcional)</label>
+      <input id="fNote" type="text" maxlength="60" autocomplete="off" autocapitalize="sentences" placeholder="Ex.: fornecedor, onde está guardado">
+    </div>
     <div class="sheet-actions">
       <button type="submit" class="btn btn-primary">Guardar</button>
       <button type="button" class="btn btn-soft" id="editCancel">Cancelar</button>
       <button type="button" class="btn btn-danger full" id="editDelete">Apagar</button>
     </div>
   </form>
+</div>
+
+<!-- Janela: enviar lista de compras -->
+<div class="overlay" id="shopSendOverlay" role="dialog" aria-modal="true" aria-labelledby="shopSendTitle">
+  <div class="sheet">
+    <h2 id="shopSendTitle">Enviar lista de compras</h2>
+    <div class="field">
+      <label for="shopText">Texto da lista</label>
+      <textarea id="shopText" readonly spellcheck="false"></textarea>
+    </div>
+    <div class="sheet-actions">
+      <button type="button" class="btn btn-soft" id="shopCopy">Copiar texto</button>
+      <button type="button" class="btn btn-primary" id="shopWa">Abrir no WhatsApp</button>
+      <button type="button" class="btn btn-outline full" id="shopSendClose">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Janela: receber mercadoria -->
+<div class="overlay" id="recvOverlay" role="dialog" aria-modal="true" aria-labelledby="recvTitle">
+  <div class="sheet">
+    <h2 id="recvTitle">Receber mercadoria</h2>
+    <p class="hint">Escreva a quantidade que chegou de cada material. Os que ficarem vazios não mudam.</p>
+    <div id="recvList"></div>
+    <button type="button" class="link-btn" id="recvAll">Mostrar todos os materiais</button>
+    <div class="err" id="recvErr"></div>
+    <div class="sheet-actions">
+      <button type="button" class="btn btn-primary full" id="recvOk">Somar ao stock</button>
+      <button type="button" class="btn btn-outline full" id="recvClose">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Janela: contagem rápida -->
+<div class="overlay" id="countOverlay" role="dialog" aria-modal="true" aria-labelledby="countTitle">
+  <div class="sheet">
+    <h2 id="countTitle">Contagem rápida</h2>
+    <div id="countBody"></div>
+  </div>
 </div>
 
 <!-- Janela: enviar / receber -->
@@ -625,8 +742,10 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
       var fam = findFamily(p.family) || 'Comida';
       var unit = findUnit(p.unit) || 'un';
       var q = Number(p.qty), m = Number(p.min);
-      out.push({ id: p.id || newId(), name: p.name.trim(), family: fam, unit: unit,
-        qty: isFinite(q) && q > 0 ? round(q) : 0, min: isFinite(m) && m > 0 ? round(m) : 0 });
+      var it = { id: p.id || newId(), name: p.name.trim(), family: fam, unit: unit,
+        qty: isFinite(q) && q > 0 ? round(q) : 0, min: isFinite(m) && m > 0 ? round(m) : 0 };
+      if (typeof p.note === 'string' && p.note.trim()) it.note = p.note.trim().slice(0, 60);
+      out.push(it);
     });
     return out;
   }
@@ -701,7 +820,7 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
   }
 
   var items = load();
-  var state = { tab: 'Todas', filter: 'all', query: '', view: 'stock' };
+  var state = { tab: 'Todas', filter: 'all', query: '', view: 'home' };
 
   // ---------- elementos ----------
   var $ = function (id) { return document.getElementById(id); };
@@ -714,21 +833,20 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
     $('userChip').setAttribute('aria-label', 'Utilizador: ' + (cu ? cu.name : 'nenhum') + '. Tocar para trocar.');
     $('userAv').textContent = cu ? cu.name.charAt(0).toUpperCase() : '?';
     var total = items.length;
-    var toBuy = items.filter(needsRestock).length;
-    elSummary.innerHTML = total + (total === 1 ? ' material' : ' materiais') + ' · ' +
-      (toBuy ? '<b>' + toBuy + ' a repor</b>' : '0 a repor');
+    elSummary.textContent = total + (total === 1 ? ' material' : ' materiais');
 
     renderTabs();
     renderList();
+    renderHome();
+    renderShop();
   }
 
   function renderTabs() {
     var tabs = ['Todas'].concat(FAMILIES);
     elTabs.innerHTML = tabs.map(function (t) {
-      var n = items.filter(function (p) { return (t === 'Todas' || p.family === t) && needsRestock(p); }).length;
       var sel = state.tab === t;
       return '<button class="tab" role="tab" data-tab="' + esc(t) + '" aria-selected="' + sel + '">' + esc(t) +
-        (n ? '<span class="rdot" aria-label="' + n + ' a repor"></span>' : '') + '</button>';
+        '</button>';
     }).join('');
   }
 
@@ -742,13 +860,14 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
     });
   }
 
-  function cardHtml(p) {
-    var st = statusOf(p);
-    var label = st === 'out' ? '<span class="st">Esgotado</span> · ' : st === 'low' ? '<span class="st">Baixo</span> · ' : '';
+  function cardHtml(p, alert) {
+    var st = alert ? statusOf(p) : 'ok';
+    var meta = '';
+    if (alert) meta = '<span class="card-meta"><span class="card-alert">' + (st === 'out' ? 'Esgotado' : 'A acabar') + '</span> · mín. ' + fmt(p.min) + ' ' + esc(p.unit) + '</span>';
+    var note = p.note ? '<span class="card-note">' + esc(p.note) + '</span>' : '';
     return '<article class="card ' + st + '" data-id="' + esc(p.id) + '">' +
       '<button class="card-main" data-act="edit" aria-label="Editar ' + esc(p.name) + '">' +
-        '<span class="card-name">' + esc(p.name) + '</span>' +
-        '<span class="card-meta">' + label + 'mín. ' + fmt(p.min) + ' ' + esc(p.unit) + '</span>' +
+        '<span class="card-name">' + esc(p.name) + '</span>' + meta + note +
       '</button>' +
       '<div class="stepper">' +
         '<button class="step minus" data-act="dec" aria-label="Menos 1 ' + esc(p.name) + '"' + (p.qty <= 0 ? ' disabled' : '') + '>−</button>' +
@@ -758,27 +877,40 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
     '</article>';
   }
 
+  // "mais mexidos": número de alterações de cada material no histórico guardado
+  function activityMap() {
+    var m = {};
+    history.forEach(function (h) { if (h.iid) m[h.iid] = (m[h.iid] || 0) + 1; });
+    return m;
+  }
+  function sortByActivity(act) {
+    return function (a, b) {
+      var d = (act[b.id] || 0) - (act[a.id] || 0);
+      if (d) return d;
+      return a.name.localeCompare(b.name, 'pt', { sensitivity: 'base' });
+    };
+  }
+
   function renderList() {
     var vis = visibleItems();
     var html = '';
     if (!vis.length) {
       var msg;
       if (state.query) msg = 'Nenhum material encontrado para “' + esc(state.query) + '”.';
-      else if (state.filter === 'low') msg = state.tab === 'Todas' ? 'Nada a repor. Está tudo em ordem!' : 'Nada a repor em ' + esc(state.tab) + '.';
       else msg = state.tab === 'Todas' ? 'Ainda não há materiais.' : 'Sem materiais em ' + esc(state.tab) + '.';
       html = '<div class="empty">' + msg +
         (!state.query && state.filter === 'all' ? '<br><button class="btn btn-primary" data-act="new-here">+ Novo material</button>' : '') +
         '</div>';
     } else if (state.tab === 'Todas') {
+      var act = activityMap();
       FAMILIES.forEach(function (f) {
-        var g = vis.filter(function (p) { return p.family === f; }).sort(sortItems);
+        var g = vis.filter(function (p) { return p.family === f; }).sort(sortByActivity(act));
         if (!g.length) return;
-        var low = g.filter(needsRestock).length;
-        html += '<h2 class="group-title">' + esc(f) + '<span>' + g.length + (low ? ' · <b>' + low + ' a repor</b>' : '') + '</span></h2>';
-        html += g.map(cardHtml).join('');
+        html += '<h2 class="group-title">' + esc(f) + '<span>' + g.length + '</span></h2>';
+        html += g.map(function (p) { return cardHtml(p, false); }).join('');
       });
     } else {
-      html = '<div class="list-top-gap"></div>' + vis.sort(sortItems).map(cardHtml).join('');
+      html = '<div class="list-top-gap"></div>' + vis.sort(sortByActivity(activityMap())).map(function (p) { return cardHtml(p, false); }).join('');
     }
     elList.innerHTML = html;
   }
@@ -800,7 +932,11 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
   var httpCbs = {}, httpSeq = 0;
 
   function syncOn() { return !!sync.url; }
-  function itemData(p) { return { name: p.name, family: p.family, qty: p.qty, unit: p.unit, min: p.min }; }
+  function itemData(p) {
+    var d = { name: p.name, family: p.family, qty: p.qty, unit: p.unit, min: p.min };
+    if (p.note) d.note = p.note;
+    return d;
+  }
   function itemsMap() { var m = {}; items.forEach(function (p) { m[p.id] = itemData(p); }); return m; }
 
   window.__httpDone = function (id, status, text) {
@@ -869,7 +1005,7 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
       Object.keys(obj).forEach(function (k) {
         var p = obj[k];
         if (!p || typeof p !== 'object' || typeof p.name !== 'string' || !p.name.trim()) { fixes.push(['items/' + k, null]); return; }
-        var s = sanitize([{ id: k, name: p.name, family: p.family, qty: p.qty, unit: p.unit, min: p.min }]);
+        var s = sanitize([{ id: k, name: p.name, family: p.family, qty: p.qty, unit: p.unit, min: p.min, note: p.note }]);
         if (s.length) list.push(s[0]);
         if (Number(p.qty) < 0) fixes.push(['items/' + k + '/qty', 0]);
       });
@@ -1218,7 +1354,7 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
   $('btnSwitch').addEventListener('click', showUserScreen);
 
   // ---------- histórico ----------
-  var ACT_LABEL = { adj: 'Ajuste − / +', edit: 'Editado', 'new': 'Novo material', del: 'Apagado', reset: 'Repor dados de exemplo', 'import': 'Texto colado aplicado' };
+  var ACT_LABEL = { adj: 'Ajuste − / +', edit: 'Editado', 'new': 'Novo material', del: 'Apagado', reset: 'Repor dados de exemplo', 'import': 'Texto colado aplicado', count: 'Contagem', rec: 'Receção' };
   function histData(h) {
     var d = { ts: h.ts, uid: h.uid, user: h.user, item: h.item, iid: h.iid, unit: h.unit, act: h.act };
     if (h.before != null) d.before = h.before;
@@ -1287,24 +1423,266 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
     list.forEach(function (h) {
       var day = dayLabel(h.ts);
       if (day !== lastDay) { html += '<div class="hist-day">' + esc(day) + '</div>'; lastDay = day; }
-      var d = new Date(h.ts);
-      var unit = (h.act === 'reset' || h.act === 'import') ? ' materiais' : (h.unit ? ' ' + h.unit : '');
-      var chg = (h.before == null ? '—' : fmt(h.before)) + ' → ' + (h.after == null ? '—' : fmt(h.after)) + esc(unit);
-      var delta = '';
-      if (h.before != null && h.after != null && h.before !== h.after && h.act !== 'reset' && h.act !== 'import') {
-        var dv = round(h.after - h.before);
-        delta = ' <span class="' + (dv > 0 ? 'up' : 'down') + '">(' + (dv > 0 ? '+' : '−') + fmt(Math.abs(dv)) + ')</span>';
-      }
-      html += '<div class="hist-row"><div class="hist-top"><div class="hist-item">' + esc(h.item) + '</div>' +
-        '<div class="hist-chg">' + chg + delta + '</div></div>' +
-        '<div class="hist-meta"><b>' + esc(h.user) + '</b> · ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ' · ' +
-        esc(ACT_LABEL[h.act] || h.act) + (h.note ? ' · ' + esc(h.note) : '') + '</div></div>';
+      html += histRowHtml(h, false);
     });
     $('histList').innerHTML = html;
+  }
+  function histRowHtml(h, withDay) {
+    var d = new Date(h.ts);
+    var unit = (h.act === 'reset' || h.act === 'import') ? ' materiais' : (h.unit ? ' ' + h.unit : '');
+    var chg = (h.before == null ? '—' : fmt(h.before)) + ' → ' + (h.after == null ? '—' : fmt(h.after)) + esc(unit);
+    var delta = '';
+    if (h.before != null && h.after != null && h.before !== h.after && h.act !== 'reset' && h.act !== 'import') {
+      var dv = round(h.after - h.before);
+      delta = ' <span class="' + (dv > 0 ? 'up' : 'down') + '">(' + (dv > 0 ? '+' : '−') + fmt(Math.abs(dv)) + ')</span>';
+    }
+    var when = (withDay && dayLabel(h.ts) !== 'Hoje' ? dayLabel(h.ts) + ' ' : '') + pad(d.getHours()) + ':' + pad(d.getMinutes());
+    return '<div class="hist-row"><div class="hist-top"><div class="hist-item">' + esc(h.item) + '</div>' +
+      '<div class="hist-chg">' + chg + delta + '</div></div>' +
+      '<div class="hist-meta"><b>' + esc(h.user) + '</b> · ' + when + ' · ' +
+      esc(ACT_LABEL[h.act] || h.act) + (h.note ? ' · ' + esc(h.note) : '') + '</div></div>';
   }
 
   $('histFilter').addEventListener('change', renderHistory);
 
+
+
+  // ---------- Início ----------
+  function urgentItems() {
+    return items.filter(needsRestock).sort(function (a, b) {
+      var sa = statusOf(a) === 'out' ? 0 : 1, sb = statusOf(b) === 'out' ? 0 : 1;
+      if (sa !== sb) return sa - sb;
+      var ra = a.min > 0 ? a.qty / a.min : 1, rb = b.min > 0 ? b.qty / b.min : 1;
+      if (ra !== rb) return ra - rb;
+      return a.name.localeCompare(b.name, 'pt', { sensitivity: 'base' });
+    });
+  }
+  function renderHome() {
+    var urgent = urgentItems();
+    var html = '';
+    if (!urgent.length) {
+      html = '<div class="section-title"><h3>Stock</h3></div><div class="ok-box"><b>Está tudo em stock.</b>Nenhum material abaixo do mínimo.</div>';
+    } else {
+      html = '<div class="section-title"><h3 class="alert">A acabar / Esgotado</h3></div>' +
+        '<div id="homeList">' + urgent.map(function (p) { return cardHtml(p, true); }).join('') + '</div>' +
+        '<div class="section-title"><h3>Lista de compras</h3></div>' +
+        '<button class="shop-card" id="homeShop"><span class="big">' + urgent.length + '</span>' +
+        '<span class="txt">' + (urgent.length === 1 ? 'material em falta' : 'materiais em falta') + '<small>Ver lista de compras</small></span><span class="arrow">›</span></button>';
+    }
+    $('homeAlerts').innerHTML = html;
+    var recent = history.slice(0, 5);
+    $('homeRecent').innerHTML = recent.length ? recent.map(function (h) { return histRowHtml(h, true); }).join('')
+      : '<div class="ok-box">Ainda não há alterações.</div>';
+  }
+  $('homeAlerts').addEventListener('click', function (e) {
+    if (e.target.closest('#homeShop')) { setView('shop'); return; }
+    cardClick(e);
+  });
+  $('homeAllHist').addEventListener('click', function () { setView('hist'); });
+
+  // ---------- Compras ----------
+  var bought = {}; // materiais marcados como comprados (só neste telemóvel)
+  try { var bRaw = localStorage.getItem(STORE_KEY + '-comprados'); if (bRaw) bought = JSON.parse(bRaw) || {}; } catch (e) {}
+  function saveBought() { try { localStorage.setItem(STORE_KEY + '-comprados', JSON.stringify(bought)); } catch (e) {} }
+  function shopItems() {
+    var list = [];
+    FAMILIES.forEach(function (f) {
+      items.filter(function (p) { return p.family === f && needsRestock(p); })
+        .sort(function (a, b) { return a.name.localeCompare(b.name, 'pt', { sensitivity: 'base' }); })
+        .forEach(function (p) { list.push(p); });
+    });
+    return list;
+  }
+  function renderShop() {
+    var list = shopItems();
+    var changed = false;
+    Object.keys(bought).forEach(function (id) { if (!list.some(function (p) { return p.id === id; })) { delete bought[id]; changed = true; } });
+    if (changed) saveBought();
+    if (!list.length) {
+      $('shopList').innerHTML = '<div class="ok-box"><b>Nada para comprar.</b>Está tudo em stock.</div>' +
+        '<div class="shop-actions"><button class="btn btn-soft full" data-shop="recv" style="grid-column:1/-1">Receber mercadoria</button></div>';
+      return;
+    }
+    var done = list.filter(function (p) { return bought[p.id]; }).length;
+    var html = '<p class="hint">' + list.length + (list.length === 1 ? ' material abaixo do mínimo' : ' materiais abaixo do mínimo') +
+      (done ? ' · ' + done + ' comprado' + (done === 1 ? '' : 's') : '') + '. Toque no quadrado quando comprar.</p>';
+    var lastFam = '';
+    list.forEach(function (p) {
+      if (p.family !== lastFam) { html += '<h2 class="group-title">' + esc(p.family) + '</h2>'; lastFam = p.family; }
+      html += '<div class="shop-row' + (bought[p.id] ? ' done' : '') + '" data-id="' + esc(p.id) + '">' +
+        '<button class="check" data-shop="check" aria-label="Marcar ' + esc(p.name) + ' como comprado" aria-pressed="' + !!bought[p.id] + '"><span>' + (bought[p.id] ? '✓' : '') + '</span></button>' +
+        '<div class="shop-main"><div class="shop-name">' + esc(p.name) + '</div>' +
+        '<div class="shop-meta"><span class="card-alert">' + (statusOf(p) === 'out' ? 'Esgotado' : 'Tem ' + fmt(p.qty) + ' ' + esc(p.unit)) + '</span> · mín. ' + fmt(p.min) + '</div></div>' +
+        '<div class="shop-qty">' + fmt(suggested(p)) + '<small>' + esc(p.unit) + ' a comprar</small></div></div>';
+    });
+    html += '<div class="shop-actions"><button class="btn btn-soft" data-shop="send">Enviar lista</button>' +
+      '<button class="btn btn-primary" data-shop="recv">Receber mercadoria</button></div>';
+    $('shopList').innerHTML = html;
+  }
+  $('shopList').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-shop]');
+    if (!b) return;
+    if (b.dataset.shop === 'check') {
+      var id = b.closest('.shop-row').dataset.id;
+      if (bought[id]) delete bought[id]; else bought[id] = 1;
+      saveBought(); renderShop();
+    } else if (b.dataset.shop === 'send') {
+      $('shopText').value = shoppingText().text;
+      openOverlay($('shopSendOverlay'));
+    } else if (b.dataset.shop === 'recv') {
+      openRecv(false);
+    }
+  });
+  $('shopCopy').addEventListener('click', function () {
+    copyText($('shopText').value).then(function (ok) { toast(ok ? 'Lista copiada' : 'Não foi possível copiar'); });
+  });
+  $('shopWa').addEventListener('click', function () { openUrl('https://wa.me/?text=' + encodeURIComponent($('shopText').value)); });
+  $('shopSendClose').addEventListener('click', function () { closeOverlay($('shopSendOverlay')); });
+
+  // ---------- Receber mercadoria ----------
+  var recvAll = false;
+  function openRecv(all) {
+    recvAll = all || !shopItems().length;
+    renderRecv({});
+    $('recvErr').textContent = '';
+    openOverlay($('recvOverlay'));
+  }
+  function renderRecv(keep) {
+    var list = recvAll ? items.slice().sort(function (a, b) {
+      return FAMILIES.indexOf(a.family) - FAMILIES.indexOf(b.family) || a.name.localeCompare(b.name, 'pt', { sensitivity: 'base' });
+    }) : shopItems();
+    $('recvList').innerHTML = list.map(function (p) {
+      var val = keep[p.id] != null ? keep[p.id] : (!recvAll && bought[p.id] ? fmt(suggested(p)) : '');
+      return '<div class="recv-row"><div class="recv-name">' + esc(p.name) + '<small>tem ' + fmt(p.qty) + ' ' + esc(p.unit) + '</small></div>' +
+        '<input type="text" inputmode="decimal" autocomplete="off" data-id="' + esc(p.id) + '" value="' + esc(val) + '" placeholder="0" aria-label="Recebido de ' + esc(p.name) + '">' +
+        '<span class="recv-unit">' + esc(p.unit) + '</span></div>';
+    }).join('');
+    $('recvAll').hidden = recvAll;
+  }
+  function recvValues() {
+    var v = {};
+    $('recvList').querySelectorAll('input').forEach(function (i) { if (i.value.trim() !== '') v[i.dataset.id] = i.value.trim(); });
+    return v;
+  }
+  $('recvAll').addEventListener('click', function () { var keep = recvValues(); recvAll = true; renderRecv(keep); });
+  $('recvClose').addEventListener('click', function () { closeOverlay($('recvOverlay')); });
+  $('recvOk').addEventListener('click', function () {
+    var v = recvValues(), bad = false, n = 0;
+    Object.keys(v).forEach(function (id) { if (isNaN(parseNum(v[id]))) bad = true; });
+    if (bad) { $('recvErr').textContent = 'As quantidades têm de ser números (0 ou mais).'; return; }
+    Object.keys(v).forEach(function (id) {
+      var add = parseNum(v[id]);
+      var p = items.find(function (x) { return x.id === id; });
+      if (!p || !(add > 0)) return;
+      var before = p.qty;
+      p.qty = round(p.qty + add);
+      enqueueInc(p.id, add, logChange('rec', p.name, p.id, p.unit, before, p.qty));
+      delete bought[id];
+      n++;
+    });
+    if (!n) { $('recvErr').textContent = 'Escreva pelo menos uma quantidade recebida.'; return; }
+    saveBought(); save(); render();
+    if (state.view === 'hist') renderHistory();
+    closeOverlay($('recvOverlay'));
+    toast('Receção registada: ' + n + (n === 1 ? ' material' : ' materiais'));
+  });
+
+  // ---------- Contagem rápida ----------
+  var count = null; // { ids: [...], i: 0, counted: { id: valor } }
+  function startCount() {
+    var ids = [];
+    FAMILIES.forEach(function (f) {
+      items.filter(function (p) { return p.family === f; })
+        .sort(function (a, b) { return a.name.localeCompare(b.name, 'pt', { sensitivity: 'base' }); })
+        .forEach(function (p) { ids.push(p.id); });
+    });
+    if (!ids.length) { toast('Não há materiais para contar'); return; }
+    count = { ids: ids, i: 0, counted: {}, summary: false };
+    renderCount();
+    openOverlay($('countOverlay'));
+  }
+  function countDiffs() {
+    var out = [];
+    count.ids.forEach(function (id) {
+      var p = items.find(function (x) { return x.id === id; });
+      if (!p || count.counted[id] == null) return;
+      if (count.counted[id] !== p.qty) out.push({ p: p, val: count.counted[id] });
+    });
+    return out;
+  }
+  function renderCount() {
+    var body = $('countBody');
+    if (count.summary) {
+      var diffs = countDiffs();
+      var done = Object.keys(count.counted).length;
+      body.innerHTML = '<p class="hint">Contou ' + done + ' de ' + count.ids.length + ' materiais. ' +
+        (diffs.length ? diffs.length + (diffs.length === 1 ? ' diferença:' : ' diferenças:') : 'Nenhuma diferença: o stock está certo.') + '</p>' +
+        diffs.map(function (d) {
+          var dv = round(d.val - d.p.qty);
+          return '<div class="diff-row"><b>' + esc(d.p.name) + '</b><span>' + fmt(d.p.qty) + ' → ' + fmt(d.val) + ' ' + esc(d.p.unit) +
+            ' <span class="' + (dv > 0 ? 'up' : 'down') + '">(' + (dv > 0 ? '+' : '−') + fmt(Math.abs(dv)) + ')</span></span></div>';
+        }).join('') +
+        '<div class="sheet-actions" style="margin-top:16px">' +
+        (diffs.length ? '<button class="btn btn-primary full" data-cnt="apply">Aplicar ' + diffs.length + (diffs.length === 1 ? ' diferença' : ' diferenças') + '</button>' : '') +
+        '<button class="btn btn-soft" data-cnt="back">Voltar à contagem</button>' +
+        '<button class="btn btn-outline" data-cnt="cancel">' + (diffs.length ? 'Cancelar' : 'Fechar') + '</button></div>';
+      return;
+    }
+    var p = items.find(function (x) { return x.id === count.ids[count.i]; });
+    if (!p) { count.ids.splice(count.i, 1); if (count.i >= count.ids.length) count.summary = true; renderCount(); return; }
+    var prev = count.counted[p.id];
+    body.innerHTML = '<div class="count-step">' + (count.i + 1) + ' de ' + count.ids.length + '</div>' +
+      '<div class="count-bar"><i style="width:' + Math.round((count.i + 1) / count.ids.length * 100) + '%"></i></div>' +
+      '<div class="count-name">' + esc(p.name) + '</div><div class="count-fam">' + esc(p.family) + (p.note ? ' · ' + esc(p.note) : '') + '</div>' +
+      '<div class="count-now"><span>Quantidade atual</span><b>' + fmt(p.qty) + ' <small style="font-size:15px;color:var(--muted)">' + esc(p.unit) + '</small></b></div>' +
+      '<div class="field"><label for="countInput">Quantidade contada (deixe vazio se está certo)</label>' +
+      '<input id="countInput" class="count-input" type="text" inputmode="decimal" autocomplete="off" value="' + (prev != null && prev !== p.qty ? fmt(prev) : '') + '">' +
+      '<div class="err" id="countErr"></div></div>' +
+      '<div class="sheet-actions">' +
+      '<button class="btn btn-primary full" data-cnt="next" id="countNext"></button>' +
+      '<button class="btn btn-soft" data-cnt="prev"' + (count.i === 0 ? ' disabled' : '') + '>Anterior</button>' +
+      '<button class="btn btn-outline" data-cnt="end">Terminar</button></div>';
+    updateCountBtn();
+  }
+  function updateCountBtn() {
+    var inp = $('countInput'), b = $('countNext');
+    if (!inp || !b) return;
+    var p = items.find(function (x) { return x.id === count.ids[count.i]; });
+    b.textContent = inp.value.trim() === '' ? 'Certo (' + fmt(p.qty) + ' ' + p.unit + ')' : 'Guardar ' + inp.value.trim() + ' e seguinte';
+  }
+  $('countBody').addEventListener('input', function (e) { if (e.target.id === 'countInput') { updateCountBtn(); $('countErr').textContent = ''; } });
+  $('countBody').addEventListener('keydown', function (e) { if (e.target.id === 'countInput' && e.key === 'Enter') $('countNext').click(); });
+  $('countBody').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-cnt]');
+    if (!b) return;
+    var a = b.dataset.cnt;
+    if (a === 'next') {
+      var p = items.find(function (x) { return x.id === count.ids[count.i]; });
+      var raw = $('countInput').value.trim();
+      var val = raw === '' ? p.qty : parseNum(raw);
+      if (isNaN(val)) { $('countErr').textContent = 'Escreva um número (0 ou mais).'; return; }
+      count.counted[p.id] = val;
+      if (count.i < count.ids.length - 1) count.i++; else count.summary = true;
+      renderCount();
+      var ni = $('countInput'); if (ni) ni.focus();
+    } else if (a === 'prev') { if (count.i > 0) { count.i--; renderCount(); } }
+    else if (a === 'end') { count.summary = true; renderCount(); }
+    else if (a === 'back') { count.summary = false; if (count.i >= count.ids.length) count.i = count.ids.length - 1; renderCount(); }
+    else if (a === 'cancel') { closeOverlay($('countOverlay')); count = null; }
+    else if (a === 'apply') {
+      var diffs = countDiffs();
+      diffs.forEach(function (d) {
+        var before = d.p.qty;
+        d.p.qty = d.val;
+        enqueueSet('items/' + d.p.id + '/qty', d.val, logChange('count', d.p.name, d.p.id, d.p.unit, before, d.val));
+      });
+      save(); render();
+      if (state.view === 'hist') renderHistory();
+      closeOverlay($('countOverlay')); count = null;
+      toast('Contagem aplicada: ' + diffs.length + (diffs.length === 1 ? ' diferença' : ' diferenças'));
+    }
+  });
+  $('btnCount').addEventListener('click', startCount);
 
   // ---------- copiar / abrir ----------
   function copyText(text) {
@@ -1371,7 +1749,7 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
       lines.push('', f + ':');
       g.forEach(function (p) {
         count++;
-        lines.push('- ' + p.name + ': ' + fmt(suggested(p)) + ' ' + p.unit + (statusOf(p) === 'out' ? ' (esgotado)' : ''));
+        lines.push('- ' + p.name + ': ' + fmt(suggested(p)) + ' ' + p.unit + (statusOf(p) === 'out' ? ' (esgotado)' : '') + (bought[p.id] ? ' ✓ comprado' : ''));
       });
     });
     return { text: lines.join('\n'), count: count };
@@ -1433,6 +1811,7 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
     $('fQty').value = p ? fmt(p.qty) : '0';
     $('fUnit').value = p ? p.unit : 'un';
     $('fMin').value = p ? fmt(p.min) : '1';
+    $('fNote').value = p && p.note ? p.note : '';
     $('nameErr').textContent = ''; $('numErr').textContent = '';
     ['fName', 'fQty', 'fMin'].forEach(function (k) { $(k).classList.remove('invalid'); });
     var del = $('editDelete');
@@ -1461,6 +1840,7 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
     if (!ok) return;
 
     var data = { name: name, family: $('fFamily').value, qty: qty, unit: $('fUnit').value, min: min };
+    var noteVal = $('fNote').value.trim().replace(/\s+/g, ' ').slice(0, 60);
     if (editing) {
       var p = items.find(function (x) { return x.id === editing; });
       if (p) {
@@ -1469,13 +1849,16 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
         if (p.min !== data.min) notes.push('mínimo ' + fmt(p.min) + ' → ' + fmt(data.min));
         if (p.family !== data.family) notes.push('família ' + p.family + ' → ' + data.family);
         if (p.unit !== data.unit) notes.push('unidade ' + p.unit + ' → ' + data.unit);
+        if ((p.note || '') !== noteVal) notes.push('nota alterada');
         var oldQty = p.qty;
         Object.assign(p, data);
+        if (noteVal) p.note = noteVal; else delete p.note;
         enqueueSet('items/' + p.id, itemData(p), logChange('edit', p.name, p.id, p.unit, oldQty, p.qty, notes.join(', ')));
       }
       toast('Guardado');
     } else {
       data.id = newId();
+      if (noteVal) data.note = noteVal;
       items.push(data);
       enqueueSet('items/' + data.id, itemData(data), logChange('new', data.name, data.id, data.unit, null, data.qty));
       toast('Material adicionado');
@@ -1526,7 +1909,11 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
     twoStep(btn, 'Confirmar: substituir por ' + res.items.length + (res.items.length === 1 ? ' material' : ' materiais') + (syncOn() ? ' em todos os telemóveis' : ''), function () {
       // juntar duplicados (o último ganha)
       var map = {};
-      res.items.forEach(function (p) { map[norm(p.name)] = p; });
+      res.items.forEach(function (p) {
+        var old = items.find(function (x) { return norm(x.name) === norm(p.name); });
+        if (old && old.note) p.note = old.note;
+        map[norm(p.name)] = p;
+      });
       var countBefore = items.length;
       items = Object.keys(map).map(function (k) { return map[k]; });
       enqueueSet('items', itemsMap(), logChange('import', 'Todos os materiais', '', '', countBefore, items.length));
@@ -1550,7 +1937,7 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
       if (currentUser()) { hideUserScreen(); return true; }
       return false; // sem utilizador escolhido: o botão voltar sai da app
     }
-    if (state.view !== 'stock') { setView('stock'); return true; }
+    if (state.view !== 'home') { setView('home'); return true; }
     if (state.query) { $('search').value = ''; state.query = ''; $('searchBox').classList.remove('has-text'); renderList(); return true; }
     return false;
   };
@@ -1561,13 +1948,6 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
   // ---------- eventos principais ----------
   $('btnNew').addEventListener('click', function () { openEdit(null); });
   $('btnShare').addEventListener('click', openShare);
-  $('btnShop').addEventListener('click', function () {
-    var s = shoppingText();
-    if (!s.count) { toast('Nada a repor'); return; }
-    copyText(s.text).then(function (ok) {
-      toast(ok ? 'Lista copiada (' + s.count + (s.count === 1 ? ' material)' : ' materiais)') : 'Não foi possível copiar');
-    });
-  });
   $('btnReset').addEventListener('click', function () {
     twoStep(this, syncOn() ? 'Confirmar repor exemplo (apaga o stock em todos os telemóveis)' : 'Confirmar repor exemplo (apaga o stock atual)', function () {
       var countBefore = items.length;
@@ -1577,7 +1957,7 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
       $('search').value = ''; $('searchBox').classList.remove('has-text');
       closeOverlay($('moreOverlay'));
       save();
-      setView('stock');
+      setView('home');
       toast('Dados de exemplo repostos');
     }, 'btn-warn-armed');
   });
@@ -1592,21 +1972,22 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
     $('search').value = ''; state.query = ''; $('searchBox').classList.remove('has-text'); renderList(); $('search').focus();
   });
 
-  // ---------- navegação em baixo: Stock · A repor · Histórico · Mais ----------
+  // ---------- navegação em baixo: Início · Stock · Compras · Histórico · Mais ----------
+  var VIEWS = { home: 'homeView', stock: 'stockView', shop: 'shopView', hist: 'histView' };
+  var NAVS = { home: 'navHome', stock: 'navStock', shop: 'navShop', hist: 'navHist' };
   function setView(v) {
     var changed = state.view !== v;
     state.view = v;
-    if (v !== 'hist') state.filter = v === 'low' ? 'low' : 'all';
-    $('stockView').hidden = v === 'hist';
-    $('histView').hidden = v !== 'hist';
-    $('navStock').setAttribute('aria-current', v === 'stock' ? 'page' : 'false');
-    $('navLow').setAttribute('aria-current', v === 'low' ? 'page' : 'false');
-    $('navHist').setAttribute('aria-current', v === 'hist' ? 'page' : 'false');
+    Object.keys(VIEWS).forEach(function (k) {
+      $(VIEWS[k]).hidden = k !== v;
+      $(NAVS[k]).setAttribute('aria-current', k === v ? 'page' : 'false');
+    });
     if (v === 'hist') renderHistory(); else render();
     if (changed) window.scrollTo(0, 0);
   }
+  $('navHome').addEventListener('click', function () { setView('home'); });
   $('navStock').addEventListener('click', function () { setView('stock'); });
-  $('navLow').addEventListener('click', function () { setView('low'); });
+  $('navShop').addEventListener('click', function () { setView('shop'); });
   $('navHist').addEventListener('click', function () { setView('hist'); });
   $('navMore').addEventListener('click', function () { disarm($('btnReset')); openOverlay($('moreOverlay')); });
   $('moreClose').addEventListener('click', function () { closeOverlay($('moreOverlay')); });
@@ -1637,7 +2018,8 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
     if (window.scrollY > top) window.scrollTo(0, top);
   });
 
-  elList.addEventListener('click', function (e) {
+  elList.addEventListener('click', cardClick);
+  function cardClick(e) {
     var b = e.target.closest('[data-act]');
     if (!b) return;
     var act = b.dataset.act;
@@ -1655,7 +2037,7 @@ details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; f
     var sl = elTabs.scrollLeft;
     render();
     elTabs.scrollLeft = sl;
-  });
+  }
 
   // guardar ao sair (garantia)
   document.addEventListener('visibilitychange', function () {
