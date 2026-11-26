@@ -1,10 +1,53 @@
 # Relatórios — Stock do snack bar
 
 ## Estado atual do projeto
-- **Funciona (testado em Chromium):** APK v1.3 em `dist/`, com o novo visual escuro laranja e preto e a navegação em baixo. Tem stock offline, partilha opcional via Firebase, até 3 utilizadores e histórico das últimas 200 alterações.
+- **Funciona (testado em Chromium):** APK v1.4 em `dist/` com 5 páginas (Início, Stock, Compras, Histórico, Mais), contagem rápida, receção de mercadoria e notas por produto. Mantém stock offline, partilha opcional via Firebase, até 3 utilizadores e histórico de 200 alterações.
 - **Falta:** testar num telemóvel real (visual, ícone, margens, teclado) e com a base de dados Firebase verdadeira.
 - **Maior risco:** a partilha e os utilizadores só foram testados contra uma imitação local da Firebase. O comportamento real (regras, PATCH via Java, ponte Android) está por confirmar.
 - **Segurança:** a palavra-passe da chave esteve escrita no `app/build.gradle` (público) até ao commit `60d93c4`. Já foi retirada, mas continua no histórico do git. Recomenda-se mudar a palavra-passe da chave; o certificado mantém-se igual.
+
+---
+
+## 2026-11-26 18:09 — Páginas por secção, contagem rápida, receção e notas
+- **Pedido:** dividir a app em páginas (Início, Stock, Compras, Histórico, Mais), deixar os avisos de mínimo só em Início e Compras, e acrescentar contagem rápida, receção de mercadoria e nota por produto.
+- **Feito:**
+  - Navegação com 5 separadores. A app abre em Início. O botão voltar leva ao Início.
+  - **Início:**
+    - Bloco "A acabar / Esgotado": esgotados primeiro, depois pela razão quantidade/mínimo. Tem − e + diretos e vermelho discreto.
+    - Cartão laranja "Lista de compras" com o número em falta; abre Compras.
+    - "Últimas alterações" (5) com "Ver tudo". "Está tudo em stock." quando nada falta.
+  - **Stock:** pesquisa, famílias e lista com − e +, sem avisos nem pontos vermelhos. Dentro de cada família, os mais mexidos aparecem primeiro (contagem de entradas no histórico guardado; desempate alfabético).
+  - **Compras:**
+    - Lista automática do que está abaixo do mínimo, agrupada por família, com a sugestão (2×mín − qtd) e um visto ao comprar.
+    - "Enviar lista" com texto, copiar e WhatsApp; os comprados aparecem marcados com "✓ comprado".
+    - "Receber mercadoria": um campo por item, com os comprados pré-preenchidos com a sugestão e a opção "Mostrar todos os materiais". Soma ao stock (incrementos atómicos) e regista "Receção" no histórico.
+  - **Mais:** Contagem rápida, Enviar ou receber stock, Partilhar entre telemóveis, Gerir utilizadores, Trocar utilizador, Repor dados de exemplo.
+  - **Contagem rápida:**
+    - Produto a produto, com barra de progresso e a quantidade atual. Vazio = "Certo"; um número = nova quantidade. Tem "Anterior" e "Terminar".
+    - No fim mostra as diferenças e aplica-as. Cada diferença é gravada como valor absoluto e registada como "Contagem" no histórico.
+  - **Nota por produto:** campo opcional na edição (até 60 caracteres), mostrada em pequeno na linha, guardada no próprio produto (também na Firebase). "Aplicar texto colado" mantém as notas dos produtos com o mesmo nome.
+  - Cabeçalho só com "N materiais" (sem "a repor").
+  - Versão 1.4 (versionCode 5), assinada com `keystore/stock.jks`; a palavra-passe só veio da variável de ambiente.
+- **Ficheiros:** `app/src/main/assets/index.html`, `app/build.gradle`, `dist/StockSnackBar.apk` (alterados).
+- **Estado:**
+  - Compila. Assinatura verificada: o certificado é o mesmo.
+  - Novo teste em Chromium a 390×844 e 360×640 (94 verificações): todas as páginas e janelas sem texto cortado, barra em baixo sem tapar conteúdo, sem erros JS. Confirma:
+    - avisos só em Início/Compras;
+    - ajuste no Início reflete-se em Stock e Compras;
+    - visto, envio da lista e receção (stock + histórico);
+    - contagem (Certo, número novo, número inválido, resumo, aplicar, histórico);
+    - nota; "tudo em stock"; voltar.
+  - As 39 verificações anteriores (utilizadores, histórico, partilha simulada com 2 telemóveis, offline, limite 200) foram adaptadas à nova navegação e passam todas.
+  - **Não testado:** num telemóvel real e com a Firebase verdadeira.
+- **Problemas:**
+  - O visto de "comprado" fica só no telemóvel onde foi marcado, sem ir para a Firebase, para não mudar a estrutura dos dados partilhados. É apagado sozinho quando o produto deixa de estar abaixo do mínimo.
+  - A nota é um campo novo opcional no produto (`note`). Não entra no texto de "Enviar ou receber stock", para manter o formato combinado.
+  - A contagem não fica guardada se a app fechar a meio.
+  - "Mais mexidos" usa só as últimas 200 alterações do histórico.
+- **Próximos passos:**
+  1. Atualizar os telemóveis e fazer uma contagem real e uma receção real.
+  2. Decidir se o visto "comprado" deve ser partilhado entre telemóveis.
+  3. Mudar a palavra-passe da chave (pendente, ver entradas anteriores).
 
 ---
 
