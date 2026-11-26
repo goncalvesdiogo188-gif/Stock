@@ -1,10 +1,54 @@
 # Relatórios — Stock do snack bar
 
 ## Estado atual do projeto
-- **Funciona (testado em Chromium):** APK v1.4 em `dist/` com 5 páginas (Início, Stock, Compras, Histórico, Mais), contagem rápida, receção de mercadoria e notas por produto. Mantém stock offline, partilha opcional via Firebase, até 3 utilizadores e histórico de 200 alterações.
+- **Funciona (testado em Chromium):** APK v1.5 em `dist/`. Páginas Avisos (quadro da equipa, abre aqui), Stock, Histórico e Mais. Sem mínimos nem reposição. Mais tem lista de compras manual, receção, contagem rápida e notas por produto. Mantém stock offline, partilha opcional via Firebase, até 3 utilizadores e histórico de 200 alterações.
 - **Falta:** testar num telemóvel real (visual, ícone, margens, teclado) e com a base de dados Firebase verdadeira.
 - **Maior risco:** a partilha e os utilizadores só foram testados contra uma imitação local da Firebase. O comportamento real (regras, PATCH via Java, ponte Android) está por confirmar.
 - **Segurança:** a palavra-passe da chave esteve escrita no `app/build.gradle` (público) até ao commit `60d93c4`. Já foi retirada, mas continua no histórico do git. Recomenda-se mudar a palavra-passe da chave; o certificado mantém-se igual.
+
+---
+
+## 2026-11-26 19:20 — Avisos da equipa; fim dos mínimos e da reposição
+- **Pedido:** a app serve para saber o que há em stock, não para avisar o que comprar. Remover tudo o que é mínimo/reposição e transformar o Início num quadro de avisos da equipa.
+- **Feito:**
+  - **Mínimo removido:** campo na edição, "A acabar / Esgotado", indicadores vermelhos, sugestões, página Compras automática e cartão do Início. Quantidade 0 mostra só "0", sem destaque.
+  - **Dados antigos:** o campo `min` (local ou Firebase) é lido sem erro e preservado tal como está no produto. Não é mostrado nem usado, nem apagado à força. As notas antigas do histórico que falavam do mínimo deixam de aparecer.
+  - **Texto de enviar/receber:** agora `Família | Nome | quantidade unidade`; a coluna `min` saiu. O importador aceita também os textos antigos de 4 colunas (ignora o `min`). Os produtos importados mantêm a nota de um produto com o mesmo nome.
+  - **Navegação:** Avisos · Stock · Histórico · Mais. A app abre em Avisos e o botão voltar volta a Avisos.
+  - **Avisos:**
+    - Caixa "Escreve um aviso para a equipa" com contador 0/300 e botão laranja "Publicar" (desativado com o texto vazio).
+    - Lista do mais recente para o mais antigo, com nome e "hoje 14:32" / "ontem 09:10" / "dd/mm hh:mm". Os fixados aparecem primeiro, com ícone e barra laranja.
+    - "Resolvido" esbate o aviso e desce-o para "Resolvidos (N)", recolhido por defeito; pode reabrir-se. Apagar em dois toques. Qualquer utilizador pode fazer tudo.
+    - Máximo de 50: saem primeiro os resolvidos mais antigos, depois o mais antigo por resolver que não esteja fixado.
+    - Ponto laranja em "Avisos" quando há avisos por resolver de outros utilizadores ainda não vistos. O último momento visto fica guardado neste telemóvel, por utilizador.
+    - Mensagem a convidar a escrever o primeiro quando não há avisos.
+    - Firebase `lojas/<código>/notices/<id>` = {text, user, uid, ts, pinned, resolved, resolvedTs}. Criar e apagar escrevem o nó inteiro; fixar e resolver escrevem só os campos desse nó, num PATCH atómico. Usam a mesma fila offline e não entram no histórico do stock.
+    - Se um telemóvel fixar um aviso que outro acabou de apagar, o nó incompleto é limpo na sincronização seguinte.
+  - **Mais:** Lista de compras, Receber mercadoria, Contagem rápida, Enviar ou receber stock, Partilhar entre telemóveis, Gerir utilizadores, Trocar utilizador, Repor dados de exemplo.
+  - **Lista de compras manual:** itens livres (60 caracteres) com quem os escreveu, visto de comprado (descem e ficam riscados), apagar em dois toques, "Apagar comprados", copiar e WhatsApp. Partilhada em `lojas/<código>/shopping`, com um nó por item.
+  - **Receber mercadoria:** mostra todos os materiais; soma e regista "Receção" como antes.
+  - Ao ligar um telemóvel a uma partilha que ainda não tem avisos ou lista, os locais são enviados (como já acontecia com os utilizadores).
+  - Correção: ao ligar um telemóvel novo a uma partilha com utilizadores, o formulário "Novo utilizador" fecha e aparece a lista para escolher.
+  - Versão 1.5 (versionCode 6). Assinada com `keystore/stock.jks`; a palavra-passe só via `STOCK_KS_PASS`.
+- **Ficheiros:** `app/src/main/assets/index.html`, `app/build.gradle`, `README.md`, `dist/StockSnackBar.apk` (alterados).
+- **Estado:**
+  - Compila. Assinatura verificada: o certificado é o mesmo.
+  - Novo teste em Chromium (101 verificações, todas OK, sem erros JS):
+    - **Dados antigos:** carregam com `min`, o `min` é preservado ao editar, quantidade 0 sem destaque e texto antigo de 4 colunas importado.
+    - **Ecrã (390×844 e 360×640):** nenhum texto, campo ou atributo com mínimo, "a acabar", "esgotado" ou "a repor" (com janelas abertas e fechadas); todas as páginas e janelas sem texto cortado; a barra não tapa conteúdo.
+    - **Avisos:** publicar, limite 300, fixar, resolver, apagar em dois toques e voltar.
+    - **Lista manual, receção e contagem:** funcionam; os avisos não entram no histórico.
+    - **Dois telemóveis simulados:** veem os mesmos avisos; ponto de novo aparece e desaparece; escritas simultâneas (fixar num, resolver noutro) não se atropelam; apagar vs fixar não deixa nó fantasma; offline com envio depois; lista partilhada; limite de 50 local e na Firebase pela ordem certa; stock continua sincronizado.
+  - As 39 verificações anteriores (utilizadores, histórico, partilha, offline, limite 200) continuam a passar.
+  - **Não testado:** num telemóvel real e com a Firebase verdadeira.
+- **Problemas:**
+  - Telemóveis ainda com a v1.4 ligados à mesma partilha continuam a mostrar avisos de mínimo e não veem os avisos da equipa. Todos devem atualizar.
+  - O ponto de avisos novos depende do relógio de cada telemóvel (hora de publicação). Um utilizador escolhido pela primeira vez num telemóvel começa sem avisos "novos".
+  - O "Resolvido" retira o fixado ao aviso, para não ficar fixado na secção de resolvidos.
+- **Próximos passos:**
+  1. Atualizar todos os telemóveis para a v1.5 e publicar um aviso de teste com a Firebase real.
+  2. Confirmar no telemóvel que o teclado não tapa a caixa de avisos ao escrever.
+  3. Mudar a palavra-passe da chave (pendente).
 
 ---
 
