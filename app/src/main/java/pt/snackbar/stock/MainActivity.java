@@ -24,6 +24,11 @@ import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class MainActivity extends Activity {
 
     private static final String PREFS = "stock";
@@ -31,6 +36,7 @@ public class MainActivity extends Activity {
 
     private WebView web;
     private SharedPreferences prefs;
+    private final ExecutorService net = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +103,27 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (web != null) {
+            web.onResume();
+            web.evaluateJavascript("window.onAppResume && window.onAppResume()", null);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        if (web != null) web.onPause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        net.shutdown();
+        super.onDestroy();
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (web != null) web.saveState(outState);
@@ -137,6 +164,16 @@ public class MainActivity extends Activity {
             runOnUiThread(() -> {
                 ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 if (cm != null) cm.setPrimaryClip(ClipData.newPlainText("Stock do snack bar", text));
+            });
+        }
+
+        @JavascriptInterface
+        public void http(final String id, final String method, final String url, final String body) {
+            net.execute(() -> {
+                Object[] r = Http.request(method, url, body);
+                final String js = "window.__httpDone(" + JSONObject.quote(id) + "," + r[0] + ","
+                        + JSONObject.quote((String) r[1]) + ")";
+                runOnUiThread(() -> { if (web != null) web.evaluateJavascript(js, null); });
             });
         }
 

@@ -151,7 +151,7 @@ h1 { font-size: 24px; margin: 0; line-height: 1.15; letter-spacing: -.01em; }
 }
 
 /* Lista */
-main { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
+main { padding-bottom: calc(200px + env(safe-area-inset-bottom)); }
 .group-title {
   display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
   margin: 22px 2px 8px; font-size: 15px; text-transform: uppercase; letter-spacing: .06em; font-weight: 800; color: var(--accent-text);
@@ -246,6 +246,34 @@ main { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
 .link-btn { border: 0; background: none; color: var(--accent-text); font-weight: 650; font-size: 16px; padding: 8px 4px; min-height: 40px; }
 .hint { color: var(--muted); font-size: 14px; margin: -6px 0 14px; }
 
+/* Partilha */
+.sync-pill {
+  display: none; margin-top: 8px; border: 0; border-radius: 999px; padding: 6px 12px 6px 10px; min-height: 34px;
+  font-size: 14px; font-weight: 700; background: var(--surface-2); color: var(--text); align-items: center; gap: 8px;
+}
+.sync-pill.show { display: inline-flex; }
+.sync-pill .dot { width: 10px; height: 10px; border-radius: 50%; background: #2e9d5f; flex: none; }
+.sync-pill.busy .dot { background: var(--muted); animation: blink 1s infinite; }
+.sync-pill.offline .dot { background: var(--warn); }
+.sync-pill.error .dot { background: var(--danger); }
+@keyframes blink { 50% { opacity: .3; } }
+.sync-box { background: var(--surface-2); border-radius: 14px; padding: 12px 14px; margin-bottom: 14px; font-size: 16px; }
+.sync-box .url { font-family: ui-monospace, "Roboto Mono", Menlo, monospace; font-size: 13px; overflow-wrap: anywhere; color: var(--muted); margin-top: 6px; }
+.sheet p.txt { margin: 0 0 14px; font-size: 16px; }
+details.howto { margin: 4px 0 14px; border: 2px solid var(--line); border-radius: 14px; padding: 0 14px; }
+details.howto summary { min-height: 50px; display: flex; align-items: center; font-weight: 700; cursor: pointer; }
+details.howto ol { padding-left: 22px; margin: 0 0 12px; font-size: 16px; }
+details.howto li { margin-bottom: 8px; }
+details.howto pre { background: var(--bg); border-radius: 10px; padding: 10px; font-size: 13px; overflow-x: auto; margin: 6px 0; }
+.btn-block { width: 100%; margin-top: 10px; }
+
+.sync-strip {
+  display: none; width: 100%; max-width: 720px; margin: 0 auto 8px; border: 0; border-radius: 10px; padding: 8px 12px;
+  font-size: 15px; font-weight: 700; text-align: center; background: var(--warn-bg); color: var(--warn-text);
+}
+.sync-strip.show { display: block; }
+.sync-strip.error { background: var(--danger-bg); color: var(--danger-text); }
+
 /* Aviso */
 .toast {
   position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom)); transform: translateX(-50%) translateY(20px);
@@ -273,6 +301,7 @@ main { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
         <div class="summary" id="summary"></div>
       </div>
     </div>
+    <button class="sync-pill" id="syncPill"><span class="dot"></span><span id="syncPillText"></span></button>
 
     <button class="btn btn-primary btn-new" id="btnNew">+ Novo material</button>
 
@@ -297,13 +326,15 @@ main { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
   <div class="wrap">
     <div id="list"></div>
     <div class="reset-zone">
-      <button class="btn btn-outline" id="btnReset">Repor dados de exemplo</button>
-      <p>Os dados ficam guardados só neste telemóvel.</p>
+      <button class="btn btn-soft" id="btnSync">Partilhar entre telemóveis</button>
+      <p id="syncNote">Os dados ficam guardados só neste telemóvel.</p>
+      <button class="btn btn-outline" id="btnReset" style="margin-top:18px">Repor dados de exemplo</button>
     </div>
   </div>
 </main>
 
 <div class="bottom">
+  <button class="sync-strip" id="syncStrip"></button>
   <div class="bottom-inner">
     <button class="btn btn-soft" id="btnShop">Copiar lista de compras</button>
     <button class="btn btn-primary" id="btnShare">Enviar ou receber stock</button>
@@ -369,6 +400,64 @@ main { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
       <button type="button" class="btn btn-primary full" id="shareApply">Aplicar texto colado</button>
       <button type="button" class="btn btn-outline full" id="shareClose">Fechar</button>
     </div>
+  </div>
+</div>
+
+<!-- Janela: partilhar entre telemóveis -->
+<div class="overlay" id="syncOverlay" role="dialog" aria-modal="true" aria-labelledby="syncTitle">
+  <div class="sheet">
+    <h2 id="syncTitle">Partilhar entre telemóveis</h2>
+
+    <div id="syncOff">
+      <p class="txt">Para o stock ser igual em todos os telemóveis, ligue-os à mesma base de dados (Firebase, gratuita). Sem Internet a app continua a funcionar e envia as alterações quando a rede voltar.</p>
+      <div class="field">
+        <label for="syncInput">Ligação recebida ou endereço da base de dados</label>
+        <input id="syncInput" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://…">
+        <div class="err" id="syncErr"></div>
+      </div>
+      <p class="hint" style="margin-top:-4px">Primeiro telemóvel: cole o endereço da base de dados. Outros telemóveis: cole a ligação que o primeiro enviar (não o endereço da base de dados).</p>
+      <button type="button" class="btn btn-primary btn-block" id="syncConnect">Ligar</button>
+      <details class="howto">
+        <summary>Como criar a base de dados (só uma vez)</summary>
+        <ol>
+          <li>Abra <b>console.firebase.google.com</b> com uma conta Google e toque em <b>Criar projeto</b> (qualquer nome; pode desligar o Google Analytics).</li>
+          <li>No menu, abra <b>Realtime Database</b> e toque em <b>Criar base de dados</b>. Escolha a localização <b>Bélgica (europe-west1)</b> e <b>modo bloqueado</b>.</li>
+          <li>No separador <b>Regras</b>, apague tudo, cole as regras abaixo e toque em <b>Publicar</b>.
+            <pre id="rulesText">{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "lojas": {
+      "$codigo": {
+        ".read": true,
+        ".write": true
+      }
+    }
+  }
+}</pre>
+            <button type="button" class="link-btn" id="copyRules">Copiar regras</button>
+          </li>
+          <li>No separador <b>Dados</b>, copie o endereço que aparece em cima (termina em <b>firebasedatabase.app</b> ou <b>firebaseio.com</b>) e cole-o aqui.</li>
+          <li>Toque em <b>Ligar</b> e depois em <b>Enviar ligação pelo WhatsApp</b> para os outros telemóveis.</li>
+        </ol>
+      </details>
+    </div>
+
+    <div id="syncOnBox">
+      <div class="sync-box">
+        <div id="syncState"></div>
+        <div class="url" id="syncUrl"></div>
+      </div>
+      <p class="hint" style="margin:0 0 12px">Para ligar outro telemóvel, envie-lhe esta ligação e cole-a lá em “Partilhar entre telemóveis”. Quem tiver a ligação pode ver e alterar o stock.</p>
+      <div class="sheet-actions">
+        <button type="button" class="btn btn-primary full" id="syncWa">Enviar ligação pelo WhatsApp</button>
+        <button type="button" class="btn btn-soft" id="syncCopy">Copiar ligação</button>
+        <button type="button" class="btn btn-soft" id="syncNow">Atualizar agora</button>
+        <button type="button" class="btn btn-danger full" id="syncOffBtn">Desligar a partilha</button>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-outline btn-block" id="syncClose">Fechar</button>
   </div>
 </div>
 
@@ -464,17 +553,28 @@ main { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
     });
     return out;
   }
+  // sync: { url: ligação da loja na Firebase ('' = só local), queue: alterações por enviar, rev: versão conhecida }
+  var sync = { url: '', queue: [], rev: null };
   function load() {
     var raw = null;
     try { if (bridge && bridge.load) raw = bridge.load(); } catch (e) {}
     if (!raw) { try { raw = localStorage.getItem(STORE_KEY); } catch (e) {} }
     if (raw) {
-      try { var d = sanitize(JSON.parse(raw).items); if (d) return d; } catch (e) {}
+      try {
+        var obj = JSON.parse(raw);
+        var d = sanitize(obj.items);
+        if (obj.sync && typeof obj.sync.url === 'string') {
+          sync.url = obj.sync.url;
+          sync.queue = Array.isArray(obj.sync.queue) ? obj.sync.queue : [];
+          sync.rev = obj.sync.rev == null ? null : obj.sync.rev;
+        }
+        if (d) return d;
+      } catch (e) {}
     }
     return sampleItems();
   }
   function save() {
-    var raw = JSON.stringify({ v: 1, items: items });
+    var raw = JSON.stringify({ v: 2, items: items, sync: sync });
     try { if (bridge && bridge.save) bridge.save(raw); } catch (e) {}
     try { localStorage.setItem(STORE_KEY, raw); } catch (e) {}
   }
@@ -581,6 +681,256 @@ main { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2600);
   }
+
+
+  // ---------- partilha entre telemóveis (Firebase Realtime Database, API REST) ----------
+  var SYNC_POLL_MS = 4000;
+  var syncRt = { running: false, again: false, inflight: false, status: 'ok', msg: '' };
+  var httpCbs = {}, httpSeq = 0;
+
+  function syncOn() { return !!sync.url; }
+  function itemData(p) { return { name: p.name, family: p.family, qty: p.qty, unit: p.unit, min: p.min }; }
+  function itemsMap() { var m = {}; items.forEach(function (p) { m[p.id] = itemData(p); }); return m; }
+
+  window.__httpDone = function (id, status, text) {
+    var cb = httpCbs[id]; delete httpCbs[id];
+    if (cb) cb({ status: status, text: text });
+  };
+  function http(method, url, body) {
+    var data = body === undefined ? '' : JSON.stringify(body);
+    if (bridge && bridge.http) {
+      return new Promise(function (res) {
+        var id = 'h' + (++httpSeq);
+        httpCbs[id] = res;
+        try { bridge.http(id, method, url, data); } catch (e) { delete httpCbs[id]; res({ status: 0, text: '' }); }
+      });
+    }
+    var ctl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var t = setTimeout(function () { if (ctl) ctl.abort(); }, 12000);
+    return fetch(url, { method: method, body: data || undefined, cache: 'no-store', signal: ctl ? ctl.signal : undefined })
+      .then(function (r) { return r.text().then(function (tx) { return { status: r.status, text: tx }; }); })
+      .catch(function () { return { status: 0, text: '' }; })
+      .then(function (r) { clearTimeout(t); return r; });
+  }
+  function jsonOf(r) { try { return JSON.parse(r.text); } catch (e) { return undefined; } }
+  function httpOk(r) { return r.status >= 200 && r.status < 300; }
+
+  function enqueueSet(path, value) {
+    if (!syncOn()) return;
+    if (path === 'items') sync.queue = sync.queue.slice(0, syncRt.inflight ? 1 : 0); // substitui tudo
+    sync.queue.push({ t: 'set', path: path, value: value });
+    save(); kick();
+  }
+  function enqueueInc(id, d) {
+    if (!syncOn()) return;
+    var last = sync.queue[sync.queue.length - 1];
+    var lastBusy = syncRt.inflight && sync.queue.length === 1;
+    if (last && last.t === 'inc' && last.id === id && !lastBusy) last.d = round(last.d + d);
+    else sync.queue.push({ t: 'inc', id: id, d: d });
+    save(); kick();
+  }
+  function opPatch(op) {
+    var patch = {};
+    if (op.t === 'inc') patch['items/' + op.id + '/qty'] = { '.sv': { increment: op.d } };
+    else patch[op.path] = op.value;
+    patch.rev = { '.sv': { increment: 1 } };
+    return patch;
+  }
+
+  function setSync(status, msg) {
+    syncRt.status = status; syncRt.msg = msg || '';
+    renderSyncUi();
+  }
+  function syncFail(r) {
+    if (r.status === 0) setSync('offline', 'Sem Internet. As alterações ficam guardadas e são enviadas quando a rede voltar.');
+    else if (r.status === 401 || r.status === 403) setSync('error', 'Sem permissão na base de dados. Confirme as regras (ver instruções).');
+    else if (r.status === 404) setSync('error', 'Base de dados não encontrada. Confirme a ligação.');
+    else setSync('error', 'Erro da base de dados (código ' + r.status + '). Vai tentar outra vez.');
+  }
+
+  function applyRemote(obj, rev) {
+    var list = [], fixes = [];
+    if (obj && typeof obj === 'object') {
+      Object.keys(obj).forEach(function (k) {
+        var p = obj[k];
+        if (!p || typeof p !== 'object' || typeof p.name !== 'string' || !p.name.trim()) { fixes.push(['items/' + k, null]); return; }
+        var s = sanitize([{ id: k, name: p.name, family: p.family, qty: p.qty, unit: p.unit, min: p.min }]);
+        if (s.length) list.push(s[0]);
+        if (Number(p.qty) < 0) fixes.push(['items/' + k + '/qty', 0]);
+      });
+    }
+    items = list;
+    sync.rev = rev;
+    save();
+    var sl = elTabs.scrollLeft;
+    render();
+    elTabs.scrollLeft = sl;
+    fixes.forEach(function (f) { enqueueSet(f[0], f[1]); });
+  }
+
+  async function kick() {
+    if (!syncOn()) return;
+    if (syncRt.running) { syncRt.again = true; return; }
+    syncRt.running = true;
+    var url = sync.url;
+    try {
+      do {
+        syncRt.again = false;
+        while (sync.queue.length) {
+          setSync('busy');
+          syncRt.inflight = true;
+          var r = await http('PATCH', url + '.json', opPatch(sync.queue[0]));
+          syncRt.inflight = false;
+          if (sync.url !== url) return;
+          if (!httpOk(r)) { syncFail(r); return; }
+          sync.queue.shift();
+          save();
+        }
+        var r1 = await http('GET', url + '/rev.json');
+        if (sync.url !== url) return;
+        if (!httpOk(r1)) { syncFail(r1); return; }
+        var rev = jsonOf(r1);
+        if (rev === undefined) rev = null;
+        if (rev !== sync.rev) {
+          var r2 = await http('GET', url + '/items.json');
+          if (sync.url !== url) return;
+          if (!httpOk(r2)) { syncFail(r2); return; }
+          if (sync.queue.length) { syncRt.again = true; continue; }
+          applyRemote(jsonOf(r2), rev);
+        }
+        if (!sync.queue.length) setSync('ok');
+      } while (syncRt.again || sync.queue.length);
+    } finally {
+      syncRt.running = false;
+      syncRt.inflight = false;
+    }
+  }
+
+  function renderSyncUi() {
+    var pill = $('syncPill');
+    if (!syncOn()) {
+      pill.classList.remove('show');
+      $('syncStrip').className = 'sync-strip';
+      $('syncNote').textContent = 'Os dados ficam guardados só neste telemóvel.';
+      $('btnSync').textContent = 'Partilhar entre telemóveis';
+    } else {
+      var n = sync.queue.length, txt;
+      if (syncRt.status === 'busy') txt = 'A enviar alterações…';
+      else if (syncRt.status === 'offline') txt = 'Sem Internet' + (n ? ' · ' + n + ' por enviar' : '');
+      else if (syncRt.status === 'error') txt = 'Erro na partilha · ver';
+      else txt = 'Partilhado entre telemóveis';
+      pill.className = 'sync-pill show ' + syncRt.status;
+      $('syncPillText').textContent = txt;
+      var strip = $('syncStrip');
+      var bad = syncRt.status === 'offline' || syncRt.status === 'error';
+      strip.className = 'sync-strip' + (bad ? ' show ' + syncRt.status : '');
+      strip.textContent = syncRt.status === 'offline'
+        ? 'Sem Internet' + (n ? ': ' + n + (n === 1 ? ' alteração por enviar' : ' alterações por enviar') : '') + '. Vai enviar quando a rede voltar.'
+        : 'Erro na partilha. Toque para ver.';
+      $('syncNote').textContent = 'Stock partilhado: as alterações aparecem em todos os telemóveis ligados.';
+      $('btnSync').textContent = 'Partilha entre telemóveis (ligada)';
+    }
+    $('syncOff').style.display = syncOn() ? 'none' : '';
+    $('syncOnBox').style.display = syncOn() ? '' : 'none';
+    if (syncOn()) {
+      var st = syncRt.status === 'ok' ? 'Ligado. O stock está igual ao partilhado.' :
+        syncRt.status === 'busy' ? 'A enviar alterações…' : syncRt.msg;
+      if (sync.queue.length && syncRt.status !== 'busy') st += ' (' + sync.queue.length + ' por enviar)';
+      $('syncState').textContent = st;
+      $('syncUrl').textContent = sync.url;
+    }
+  }
+
+  function shareLinkText() {
+    return 'Ligação do Stock do snack bar. Na app, abra "Partilhar entre telemóveis", cole esta mensagem e toque em Ligar:\n' + sync.url;
+  }
+  function randCode(n) {
+    var a = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789', out = '';
+    var buf = new Uint32Array(n);
+    if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(buf);
+    else for (var i = 0; i < n; i++) buf[i] = Math.floor(Math.random() * 4294967296);
+    for (var j = 0; j < n; j++) out += a[buf[j] % a.length];
+    return out;
+  }
+
+  var pendingConnect = null;
+  async function connect(btn) {
+    var err = $('syncErr');
+    if (btn.dataset.armed === '1' && pendingConnect) {
+      var pc = pendingConnect; pendingConnect = null;
+      disarm(btn);
+      sync = { url: pc.shop, queue: [], rev: null };
+      applyRemote(pc.data.items, pc.data.rev == null ? null : pc.data.rev);
+      setSync('ok');
+      toast('Ligado ao stock partilhado');
+      kick();
+      return;
+    }
+    err.textContent = '';
+    var m = $('syncInput').value.match(/(?:https:\/\/|http:\/\/(?:localhost|127\.0\.0\.1)[:\/])[^\s"'<>]+/);
+    if (!m) { err.textContent = 'Cole um endereço que comece por https://'; return; }
+    var u = m[0].replace(/[?#].*$/, '').replace(/\.json$/, '').replace(/\/+$/, '');
+    if (/console\.firebase\.google\.com/.test(u)) {
+      err.textContent = 'Esse é o endereço da consola. Copie o endereço da base de dados (termina em firebasedatabase.app ou firebaseio.com).';
+      return;
+    }
+    var shop = /\/lojas\/[A-Za-z0-9_-]+$/.test(u) ? u : u.replace(/\/lojas(\/.*)?$/, '') + '/lojas/' + randCode(20);
+    btn.disabled = true; var oldLabel = btn.textContent; btn.textContent = 'A ligar…';
+    var r = await http('GET', shop + '.json');
+    btn.disabled = false; btn.textContent = oldLabel;
+    if (!httpOk(r)) {
+      if (r.status === 0) err.textContent = 'Não foi possível ligar. Confirme a Internet e o endereço.';
+      else if (r.status === 401 || r.status === 403) err.textContent = 'Sem permissão. Confirme que publicou as regras (passo 3 das instruções).';
+      else if (r.status === 404) err.textContent = 'Base de dados não encontrada. Confirme o endereço.';
+      else err.textContent = 'Erro ao ligar (código ' + r.status + ').';
+      return;
+    }
+    var data = jsonOf(r);
+    if (data === undefined) { err.textContent = 'Este endereço não parece ser uma base de dados Firebase.'; return; }
+    var remoteCount = data && data.items && typeof data.items === 'object' ? Object.keys(data.items).length : 0;
+    if (remoteCount) {
+      pendingConnect = { shop: shop, data: data };
+      twoStep(btn, 'Confirmar: usar o stock partilhado (' + remoteCount + ' materiais) neste telemóvel', function () {});
+      btn.dataset.armed = '1'; // o segundo toque é tratado no início desta função
+      return;
+    }
+    // base vazia: criar a partilha com o stock deste telemóvel
+    var r2 = await http('PUT', shop + '.json', { items: itemsMap(), rev: 1 });
+    if (!httpOk(r2)) { err.textContent = 'Não foi possível criar a partilha (código ' + r2.status + ').'; return; }
+    sync = { url: shop, queue: [], rev: 1 };
+    save();
+    setSync('ok');
+    toast('Partilha criada. Envie a ligação aos outros telemóveis.');
+  }
+
+  $('btnSync').addEventListener('click', function () {
+    $('syncErr').textContent = '';
+    disarm($('syncConnect')); disarm($('syncOffBtn')); pendingConnect = null;
+    renderSyncUi();
+    openOverlay($('syncOverlay'));
+  });
+  $('syncPill').addEventListener('click', function () { $('btnSync').click(); });
+  $('syncStrip').addEventListener('click', function () { $('btnSync').click(); });
+  $('syncConnect').addEventListener('click', function () { connect(this); });
+  $('syncInput').addEventListener('input', function () { disarm($('syncConnect')); pendingConnect = null; $('syncErr').textContent = ''; });
+  $('syncClose').addEventListener('click', function () { closeOverlay($('syncOverlay')); });
+  $('copyRules').addEventListener('click', function () {
+    copyText($('rulesText').textContent).then(function (ok) { toast(ok ? 'Regras copiadas' : 'Não foi possível copiar'); });
+  });
+  $('syncWa').addEventListener('click', function () { openUrl('https://wa.me/?text=' + encodeURIComponent(shareLinkText())); });
+  $('syncCopy').addEventListener('click', function () {
+    copyText(shareLinkText()).then(function (ok) { toast(ok ? 'Ligação copiada' : 'Não foi possível copiar'); });
+  });
+  $('syncNow').addEventListener('click', function () { sync.rev = '__forcar__'; kick(); toast('A atualizar…'); });
+  $('syncOffBtn').addEventListener('click', function () {
+    var n = sync.queue.length;
+    twoStep(this, n ? 'Confirmar desligar (' + n + ' alterações por enviar perdem-se)' : 'Confirmar desligar', function () {
+      sync = { url: '', queue: [], rev: null };
+      save();
+      setSync('ok');
+      toast('Partilha desligada. O stock fica só neste telemóvel.');
+    });
+  });
 
   // ---------- copiar / abrir ----------
   function copyText(text) {
@@ -739,11 +1089,12 @@ main { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
     var data = { name: name, family: $('fFamily').value, qty: qty, unit: $('fUnit').value, min: min };
     if (editing) {
       var p = items.find(function (x) { return x.id === editing; });
-      if (p) Object.assign(p, data);
+      if (p) { Object.assign(p, data); enqueueSet('items/' + p.id, itemData(p)); }
       toast('Guardado');
     } else {
       data.id = newId();
       items.push(data);
+      enqueueSet('items/' + data.id, itemData(data));
       toast('Material adicionado');
     }
     save(); render();
@@ -754,6 +1105,7 @@ main { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
     var btn = this;
     twoStep(btn, 'Confirmar apagar', function () {
       items = items.filter(function (x) { return x.id !== editing; });
+      enqueueSet('items/' + editing, null);
       save(); render();
       closeOverlay($('editOverlay'));
       toast('Material apagado');
@@ -787,11 +1139,12 @@ main { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
       return;
     }
     $('shareErr').textContent = res.bad ? res.bad + (res.bad === 1 ? ' linha inválida será ignorada.' : ' linhas inválidas serão ignoradas.') : '';
-    twoStep(btn, 'Confirmar: substituir por ' + res.items.length + (res.items.length === 1 ? ' material' : ' materiais'), function () {
+    twoStep(btn, 'Confirmar: substituir por ' + res.items.length + (res.items.length === 1 ? ' material' : ' materiais') + (syncOn() ? ' em todos os telemóveis' : ''), function () {
       // juntar duplicados (o último ganha)
       var map = {};
       res.items.forEach(function (p) { map[norm(p.name)] = p; });
       items = Object.keys(map).map(function (k) { return map[k]; });
+      enqueueSet('items', itemsMap());
       save(); render();
       closeOverlay($('shareOverlay'));
       toast('Stock atualizado: ' + items.length + ' materiais');
@@ -826,8 +1179,9 @@ main { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
     });
   });
   $('btnReset').addEventListener('click', function () {
-    twoStep(this, 'Confirmar repor exemplo (apaga o stock atual)', function () {
+    twoStep(this, syncOn() ? 'Confirmar repor exemplo (apaga o stock em todos os telemóveis)' : 'Confirmar repor exemplo (apaga o stock atual)', function () {
       items = sampleItems();
+      enqueueSet('items', itemsMap());
       state.tab = 'Todas'; state.filter = 'all'; state.query = '';
       $('search').value = ''; $('searchBox').classList.remove('has-text');
       $('fAll').setAttribute('aria-pressed', 'true'); $('fLow').setAttribute('aria-pressed', 'false');
@@ -881,8 +1235,10 @@ main { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
     var p = items.find(function (x) { return x.id === card.dataset.id; });
     if (!p) return;
     if (act === 'edit') { openEdit(p.id); return; }
+    var before = p.qty;
     if (act === 'inc') p.qty = round(p.qty + 1);
     if (act === 'dec') p.qty = Math.max(0, round(p.qty - 1));
+    if (p.qty !== before) enqueueInc(p.id, round(p.qty - before));
     save();
     var sl = elTabs.scrollLeft;
     render();
@@ -890,10 +1246,17 @@ main { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
   });
 
   // guardar ao sair (garantia)
-  document.addEventListener('visibilitychange', function () { if (document.hidden) save(); });
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) save(); else kick();
+  });
 
   render();
   save();
+  renderSyncUi();
+  kick();
+  setInterval(function () { if (syncOn() && !document.hidden) kick(); }, SYNC_POLL_MS);
+  window.addEventListener('online', function () { kick(); });
+  window.onAppResume = function () { kick(); };
 })();
 </script>
 </body>
