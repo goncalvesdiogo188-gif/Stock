@@ -1,14 +1,57 @@
 # Relatórios — Stock do snack bar
 
 ## Estado atual do projeto
-- **Funciona (testado em Chromium):** APK v1.6 em `dist/`.
-  - Início com Avisos e Faltas.
-  - Stock por secções recolhíveis e geridas pela equipa, linhas só com nome e quantidade, folha do produto, botão "+" para novo produto.
-  - Histórico com pesquisa por produto.
-  - Mantém utilizadores, receção, contagem, partilha Firebase, modo offline e dados antigos.
+- **Funciona (testado em Chromium):** APK v1.7 em `dist/`.
+  - App branca, com cabeçalho preto e detalhes laranja.
+  - Início com o logotipo do café e os cartões Avisos e Faltas, um abaixo do outro, com novidades.
+  - Stock só com as 7 secções novas.
+  - Mantém a folha do produto, a gestão de secções, o histórico com pesquisa, os utilizadores, a receção, a contagem, a partilha Firebase e o modo offline.
 - **Falta:** testar num telemóvel real (visual, ícone, margens, teclado) e com a base de dados Firebase verdadeira.
 - **Maior risco:** a partilha e os utilizadores só foram testados contra uma imitação local da Firebase. O comportamento real (regras, PATCH via Java, ponte Android) está por confirmar.
 - **Segurança:** a palavra-passe da chave esteve escrita no `app/build.gradle` (público) até ao commit `60d93c4`. Já foi retirada, mas continua no histórico do git. Recomenda-se mudar a palavra-passe da chave; o certificado mantém-se igual.
+
+---
+
+## 2026-11-27 10:29 — Logotipo no Início, app branca, sem secções antigas
+- **Pedido:**
+  - Página inicial com o logotipo do café (fotografia da parede) e as caixas Avisos e Faltas, uma abaixo da outra, com notificação; tocar nelas abre a lista.
+  - Apagar as secções Pão, Detergentes, Lácteos e Comida.
+  - App mais limpa: branca, com preto e laranja só no cabeçalho e nos detalhes.
+- **Feito:**
+  - **Logotipo:** "caffé c@ffé" redesenhado em SVG a partir da fotografia (duas gotas preta/laranja, "@" laranja). O tipo de letra é aproximado, com Century Gothic, Futura ou o do sistema. Aparece no Início e no ecrã de escolha de utilizador. A gota laranja pequena é a marca do cabeçalho.
+  - **Início:**
+    - Logotipo e dois cartões, um abaixo do outro: Avisos e Faltas.
+    - Cada cartão mostra quantos estão por resolver ("Sem avisos" / "Não falta nada" quando não há), o texto do mais recente e um número laranja com as novidades de outros utilizadores ainda não vistas.
+    - Tocar abre a página Avisos ou Faltas, com "‹ Início" para voltar; o botão voltar do Android também volta.
+    - O controlo segmentado da v1.6 saiu. A barra em baixo continua: Início · Stock · Histórico · Mais.
+  - **Cores:** fundo, cartões, janelas e barra de baixo a branco; cabeçalho preto `#1b1b1b`; laranja `#f07b1d`, tirado do logotipo, nos botões principais, item ativo, "+" e notificações; vermelho só para apagar.
+  - **Android:** barra de estado preta (junto ao cabeçalho) com ícones claros. Barra de navegação do sistema branca com ícones escuros (Android 8.1+; no 8.0 fica preta). Tema claro e fundo da janela branco.
+  - **Secções antigas:** Pão, Detergentes, Lácteos e Comida são apagadas uma vez por partilha (e uma vez sem partilha), num só PATCH.
+    - Os produtos passam para a secção nova do exemplo, se o nome for conhecido (ex.: Tampas → Utensílios, Fiambre → Frigorífico); senão Pão→Padaria, Detergentes→Limpeza, Lácteos→Frigorífico, Comida→Armazém.
+    - Nenhum produto é apagado. Com a partilha ligada, a mudança espera pelos dados da Firebase.
+    - Depois disso, a equipa pode voltar a criar uma secção com um desses nomes, se quiser.
+  - Faltas antigas sem `uid` reconhecem o autor pelo nome, para não aparecerem como novidade a quem as escreveu.
+  - Versão 1.7 (versionCode 8), assinada com `keystore/stock.jks`; a palavra-passe só via `STOCK_KS_PASS`.
+- **Ficheiros:** alterados `app/src/main/assets/index.html`, `app/src/main/java/pt/snackbar/stock/MainActivity.java`, `app/src/main/res/values/themes.xml`, `app/build.gradle`, `README.md` e `dist/StockSnackBar.apk`; criado `app/src/main/res/values-v27/themes.xml`.
+- **Estado:**
+  - Compila. Assinatura verificada: o certificado é o mesmo.
+  - Teste em Chromium (172 verificações, todas OK três vezes seguidas, sem erros JS):
+    - Tudo o que já era testado na v1.6.
+    - Início com logotipo e cartões um abaixo do outro; contagens, texto e números de novidade.
+    - Cartões abrem as páginas e "‹ Início" volta.
+    - Cores medidas: corpo, cartões e barra brancos; cabeçalho preto.
+    - Dados locais antigos: Lácteos/Comida desaparecem, produtos movidos e não voltam após recarregar.
+    - Partilha antiga com Pão/Comida/Lácteos/Detergentes: a Firebase fica com 7 secções e os 6 produtos movidos para o sítio certo, sem perder nada (o mínimo antigo mantém-se).
+    - Duas medidas (390×844 e 360×640): sem texto cortado nem elementos tapados.
+  - **Não testado:** num telemóvel real (cores das barras do sistema, aspeto do logotipo com o tipo de letra do telemóvel) e com a Firebase verdadeira.
+- **Problemas:**
+  - Encontrado e corrigido durante o trabalho: uma substituição apagou o código de publicar e gerir avisos; foi recuperado do git e coberto pelos testes.
+  - O logotipo é uma reprodução aproximada; com o ficheiro original (SVG ou PNG), fica exato.
+  - O título do cabeçalho continua "Stock do snack bar".
+- **Próximos passos:**
+  1. Atualizar todos os telemóveis e confirmar onde ficaram os produtos das secções antigas.
+  2. Enviar o ficheiro original do logotipo, se existir, para substituir a reprodução.
+  3. Decidir se o título do cabeçalho passa a ser o nome do café e se o ícone da app passa a ser a gota do logotipo.
 
 ---
 
