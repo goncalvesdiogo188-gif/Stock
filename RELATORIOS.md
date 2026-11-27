@@ -1,13 +1,51 @@
 # Relatórios — Stock do snack bar
 
 ## Estado atual do projeto
-- **Funciona (testado em Chromium):** APK v1.9 em `dist/` ("caffé c@ffé").
-  - Início com cartões Avisos e Faltas só com título, número laranja por resolver (escondido quando é 0) e seta.
-  - Unidade do produto escolhida por botões: un, caixa, saco, pacote, garrafa, lata, kg, L ou Outra (texto até 12 caracteres).
-  - Mantém secções coloridas, utilizadores, histórico, avisos, faltas, contagem, receção, partilha Firebase e modo offline.
-- **Falta:** testar num telemóvel real e com a base de dados Firebase verdadeira.
+- **Funciona (testado em Chromium):** APK v2.0 em `dist/` ("caffé c@ffé").
+  - Stock em dois níveis: grelha de cartões por secção (cor, nome e número de produtos) e página de cada secção com "‹ Stock", pesquisa e lista.
+  - Pesquisa geral no topo do Stock, com a secção de cada produto. Unidade por botões; Início com cartões Avisos/Faltas.
+  - Mantém utilizadores, histórico, avisos, faltas, contagem, receção, partilha Firebase e modo offline.
+- **Falta:** testar num telemóvel real (incluindo o botão voltar do Android) e com a Firebase verdadeira.
 - **Maior risco:** a partilha só foi testada contra uma imitação local da Firebase.
 - **Segurança:** a palavra-passe da chave continua no histórico do git (até ao commit `60d93c4`). Recomenda-se mudá-la.
+
+---
+
+## 2026-11-27 11:30 — Stock em dois níveis (v2.0)
+- **Pedido:** só interface. Página Stock com grelha de cartões por secção; pesquisa geral; página de cada secção com voltar, título, pesquisa e lista; novo produto com a secção já escolhida; mensagem na secção vazia; tirar secções recolhíveis e "Favoritos"; lembrar a secção aberta.
+- **Feito:**
+  - Grelha 2 por linha (também a 360 px). Cada cartão tem fundo suave da cor da secção, nome em Poppins 19 px na cor forte e círculo com o número de produtos no canto (mostra também 0).
+  - "Gerir secções" e "+ Novo produto" mantêm-se na grelha. Dentro da secção, "Gerir secções" esconde-se.
+  - Pesquisa no topo: com texto mostra os produtos de todas as secções, cada um com a secção pequena e na sua cor; sem texto volta à grelha.
+  - Página da secção: "‹ Stock", título na cor da secção, pesquisa "Pesquisar em <secção>" e a mesma linha de produto (toque abre a folha).
+  - Botão voltar do Android: primeiro limpa a pesquisa, depois volta à grelha, depois ao Início. Tocar outra vez em "Stock" dentro de uma secção também volta à grelha.
+  - Novo produto dentro de uma secção abre com essa secção escolhida; na grelha, como antes (a primeira).
+  - Secção vazia: "Ainda não há produtos aqui. Toque em “+ Novo produto” para adicionar o primeiro."
+  - Removidas as secções recolhíveis (e a memória delas no telemóvel). Não existia uma lista "Favoritos" no código; a ordem dentro da secção continua a dos mais mexidos.
+  - A secção aberta fica lembrada ao mudar de separador, só enquanto a app está aberta. Se a secção aberta for apagada (aqui ou noutro telemóvel), volta à grelha.
+  - Retirado o segundo "×" que o navegador punha na pesquisa.
+  - Versão 2.0 (versionCode 11), assinada com `keystore/stock.jks`; a palavra-passe passou só por `STOCK_KS_PASS`.
+- **Ficheiros:** `app/src/main/assets/index.html`, `app/build.gradle`, `dist/StockSnackBar.apk`.
+- **Estado:**
+  - Compila. O certificado é igual ao da v1.9 e o `index.html` dentro do APK é o testado.
+  - Teste em Chromium a 390×844 e 360×640, com dois telemóveis e uma imitação local da Firebase: 160 verificações OK, sem erros JS.
+    - Grelha com 9 secções, 9 cores, 2 por linha, fonte de títulos.
+    - Contagens iguais aos produtos de cada secção (abrindo cada uma), a atualizar ao criar e mover produtos, e iguais no outro telemóvel.
+    - Abrir e voltar com "‹ Stock" e com o voltar do Android (simulado com `handleBack`).
+    - Pesquisa geral (várias secções, com nome da secção) e dentro da secção (só dessa secção; sem resultados).
+    - Novo produto com a secção escolhida; secção vazia com mensagem.
+    - Gerir secções: criar, renomear, mudar a cor e apagar refletem-se na grelha e no outro telemóvel.
+    - Sem texto cortado, sobreposições nem deslocamento horizontal. O último cartão fica acima da barra de baixo.
+    - Partilha, histórico, avisos, faltas, contagem e receção continuam a funcionar.
+  - Contraste: nome sobre o fundo suave ≥ 4,3:1 (texto grande, mínimo 3:1); número branco sobre o círculo ≥ 4,9:1.
+  - **Não testado:** num telemóvel real (botão voltar verdadeiro, toque, teclado) e com a Firebase verdadeira.
+- **Problemas:**
+  - Primeira versão: o nome dos cartões a 18 px ficava abaixo do contraste pedido para texto normal (4,3:1). Passou a 19 px negrito, que conta como texto grande.
+  - Usei por engano o id `secTitle`, que já existia em "Gerir secções". Corrigido para `secPageTitle` antes dos testes.
+- **Próximos passos:**
+  1. Atualizar todos os telemóveis para a v2.0 e experimentar o botão voltar do Android.
+  2. Ver se a ordem das secções na grelha é a desejada (setas ↑↓ em "Gerir secções").
+  3. Mudar a palavra-passe da chave (pendente).
 
 ---
 
