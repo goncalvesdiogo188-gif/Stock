@@ -120,7 +120,12 @@ h1 { font-size: 19px; margin: 0; line-height: 1.2; font-weight: 750; letter-spac
 .btn-add { width: 52px; min-height: 52px; padding: 0; font-size: 28px; font-weight: 500; flex: none; }
 
 /* Início: logotipo e cartões */
-.home-logo { display: block; width: 100%; max-width: 330px; margin: 26px auto 22px; }
+/* Início: ocupa a altura livre entre o cabeçalho e a barra de baixo; espaços proporcionais à altura do ecrã */
+#homeView main { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom)); }
+#homeView .wrap { display: flex; flex-direction: column; min-height: calc(100vh - var(--head-h, 120px) - var(--nav-h) - env(safe-area-inset-bottom)); min-height: calc(100dvh - var(--head-h, 120px) - var(--nav-h) - env(safe-area-inset-bottom)); }
+.home-logo { display: block; flex: none; width: 100%; max-width: min(330px, 36vh * 2.13); margin: clamp(20px, 6vh, 64px) auto 0; }
+.home-cards { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: clamp(12px, 2.6vh, 26px); padding: clamp(24px, 6vh, 64px) 0 clamp(16px, 4vh, 48px); }
+.home-cards .home-card { margin-bottom: 0; }
 .home-card {
   position: relative; width: 100%; border: 1px solid var(--line); background: var(--surface); border-radius: 20px;
   padding: 20px 20px; margin-bottom: 12px; display: flex; align-items: center; gap: 12px; text-align: left; color: var(--text);
@@ -196,6 +201,9 @@ body.kb .bottom { display: none; }
 .step.big { width: 64px; height: 64px; font-size: 34px; border-radius: 18px; }
 .prod-input { min-width: 0; height: 64px; border-radius: 16px; border: 1.5px solid transparent; background: var(--surface-2); text-align: center; font-size: 28px; font-weight: 700; outline: none; font-variant-numeric: tabular-nums; }
 .prod-input:focus { border-color: var(--primary); }
+/* "Guardar" fica sempre à vista no fundo da folha (também com o teclado aberto) */
+.prod-save { position: sticky; bottom: calc(-18px - env(safe-area-inset-bottom)); z-index: 1; background: var(--surface); margin: 0 -16px; padding: 0 16px 10px; }
+.prod-save .btn { margin-top: 10px; }
 #prodOverlay .err { margin-top: 8px; }
 
 /* Gerir secções */
@@ -524,6 +532,7 @@ body[data-view="stock"] .toast { bottom: calc(var(--nav-h) + 72px + env(safe-are
         <circle cx="56" cy="120" r="16" fill="#fff"/><circle cx="56" cy="120" r="13" fill="#1b1b1b"/>
         <text x="86" y="140" font-family="'Century Gothic','Futura','Avenir Next',system-ui,sans-serif" font-size="56" font-weight="300" letter-spacing="1" fill="#1b1b1b">c<tspan fill="#f07b1d">@</tspan>ffé</text>
       </svg>
+      <div class="home-cards">
       <button class="home-card" id="cardNotices">
         <span class="txt"><span class="ttl">Avisos</span></span>
         <span class="chev2" aria-hidden="true">›</span><span class="count" id="cardNoticesBadge" hidden></span>
@@ -532,6 +541,7 @@ body[data-view="stock"] .toast { bottom: calc(var(--nav-h) + 72px + env(safe-are
         <span class="txt"><span class="ttl">Faltas</span></span>
         <span class="chev2" aria-hidden="true">›</span><span class="count" id="cardFaltasBadge" hidden></span>
       </button>
+      </div>
     </div>
   </main>
 </section>
@@ -748,7 +758,6 @@ body[data-view="stock"] .toast { bottom: calc(var(--nav-h) + 72px + env(safe-are
       <button type="button" class="step big plus" id="pInc" aria-label="Mais 1">+</button>
     </div>
     <div class="err" id="pErr"></div>
-    <button type="button" class="btn btn-primary btn-block" id="pSave">Guardar</button>
     <details class="howto" id="pMore">
       <summary>Mais opções</summary>
       <div class="field">
@@ -770,10 +779,10 @@ body[data-view="stock"] .toast { bottom: calc(var(--nav-h) + 72px + env(safe-are
       </div>
       <div class="err" id="pEErr"></div>
       <div class="sheet-actions" style="margin-bottom:14px">
-        <button type="button" class="btn btn-soft full" id="pEditSave">Guardar alterações</button>
         <button type="button" class="btn btn-danger full" id="pDelete">Apagar produto</button>
       </div>
     </details>
+    <div class="prod-save"><button type="button" class="btn btn-primary btn-block" id="pEditSave">Guardar</button></div>
     <button type="button" class="btn btn-outline btn-block" id="pClose">Fechar</button>
   </div>
 </div>
@@ -2685,26 +2694,14 @@ body[data-view="stock"] .toast { bottom: calc(var(--nav-h) + 72px + env(safe-are
   }
   $('pDec').addEventListener('click', function () { var p = sheetItem(); if (p) { changeQty(p, p.qty - 1); $('pInput').value = fmt(p.qty); } });
   $('pInc').addEventListener('click', function () { var p = sheetItem(); if (p) { changeQty(p, p.qty + 1); $('pInput').value = fmt(p.qty); } });
-  function saveTypedQty() {
+  // um só "Guardar": grava a quantidade escrita e, se mudaram, nome, unidade, secção e nota
+  function saveProduct() {
     var p = sheetItem();
     if (!p) return;
-    var v = parseNum($('pInput').value);
+    $('pErr').textContent = ''; $('pEErr').textContent = '';
+    var raw = $('pInput').value.trim();
+    var v = raw === '' ? p.qty : parseNum(raw);
     if (isNaN(v)) { $('pErr').textContent = 'Escreva um número (0 ou mais).'; return; }
-    if (v === p.qty) { toast('Sem alterações'); return; }
-    var before = p.qty;
-    p.qty = v;
-    // valor escrito: grava o número exato (não é uma soma)
-    enqueueSet('items/' + p.id + '/qty', v, logAdjust(p, before));
-    save(); render(); fillProduct(true);
-    $('pInput').blur();
-    toast('Quantidade guardada');
-  }
-  $('pSave').addEventListener('click', saveTypedQty);
-  $('pInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') saveTypedQty(); });
-  $('pInput').addEventListener('focus', function () { this.select(); });
-  $('pEditSave').addEventListener('click', function () {
-    var p = sheetItem();
-    if (!p) return;
     var name = cleanProductName($('pEName').value);
     if (!name) { $('pEErr').textContent = 'Escreva o nome do produto.'; return; }
     if (items.some(function (x) { return x.id !== p.id && norm(x.name) === norm(name); })) { $('pEErr').textContent = 'Já existe um produto com este nome.'; return; }
@@ -2715,7 +2712,20 @@ body[data-view="stock"] .toast { bottom: calc(var(--nav-h) + 72px + env(safe-are
     if (p.family !== fam) notes.push('secção ' + p.family + ' → ' + fam);
     if (p.unit !== unit) notes.push('unidade ' + p.unit + ' → ' + unit);
     if ((p.note || '') !== note) notes.push('nota alterada');
-    if (!notes.length) { toast('Sem alterações'); return; }
+    var qtyChanged = v !== p.qty;
+    if (!notes.length && !qtyChanged) { toast('Sem alterações'); return; }
+    if (qtyChanged) {
+      var before = p.qty;
+      p.qty = v;
+      // valor escrito: grava o número exato (não é uma soma)
+      enqueueSet('items/' + p.id + '/qty', v, logAdjust(p, before));
+    }
+    if (!notes.length) {
+      save(); render(); fillProduct(true);
+      $('pInput').blur();
+      toast('Quantidade guardada');
+      return;
+    }
     var famChanged = p.family !== fam;
     if (famChanged) { var no2 = nextOrder(fam, p.id); if (no2 != null) p.order = no2; else delete p.order; }
     p.name = name; p.family = fam; p.unit = unit;
@@ -2729,8 +2739,12 @@ body[data-view="stock"] .toast { bottom: calc(var(--nav-h) + 72px + env(safe-are
     if (famChanged) extra['items/' + p.id + '/order'] = typeof p.order === 'number' ? p.order : null;
     enqueueSet(null, null, extra);
     save(); render(); fillProduct(true);
-    toast('Alterações guardadas');
-  });
+    $('pInput').blur();
+    toast(qtyChanged ? 'Guardado' : 'Alterações guardadas');
+  }
+  $('pEditSave').addEventListener('click', saveProduct);
+  $('pInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') saveProduct(); });
+  $('pInput').addEventListener('focus', function () { this.select(); });
   $('pDelete').addEventListener('click', function () {
     var btn = this;
     twoStep(btn, 'Confirmar apagar', function () {
@@ -3043,6 +3057,10 @@ body[data-view="stock"] .toast { bottom: calc(var(--nav-h) + 72px + env(safe-are
   document.addEventListener('focusin', updateKb);
   document.addEventListener('focusout', function () { setTimeout(updateKb, 50); });
   document.body.setAttribute('data-view', state.view);
+  function updateHeadH() { document.documentElement.style.setProperty('--head-h', document.querySelector('header.top').offsetHeight + 'px'); }
+  if (window.ResizeObserver) new ResizeObserver(updateHeadH).observe(document.querySelector('header.top'));
+  window.addEventListener('resize', updateHeadH);
+  updateHeadH();
 
   // guardar ao sair (garantia)
   document.addEventListener('visibilitychange', function () {
