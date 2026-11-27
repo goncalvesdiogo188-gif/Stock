@@ -11,6 +11,19 @@
 
 ---
 
+## 2026-11-27 11:20 — APK v1.9 enviado na conversa
+- **Pedido:** mostrar o APK na conversa para o descarregar.
+- **Feito:** enviado `dist/StockSnackBar.apk` (v1.9, versionCode 10) como anexo. O projeto não mudou.
+- **Ficheiros:** nenhum alterado (só este relatório).
+- **Estado:** é o mesmo APK já verificado: mesmo certificado da v1.8, compila. Não testado num telemóvel real.
+- **Problemas:** nenhum.
+- **Próximos passos:**
+  1. Instalar por cima da v1.8 em todos os telemóveis.
+  2. Confirmar num telemóvel real os cartões e a escolha da unidade.
+  3. Mudar a palavra-passe da chave (pendente).
+
+---
+
 ## 2026-11-27 11:15 — Cartões sem legenda e unidade por botões (v1.9)
 - **Pedido:** só interface. Tirar a legenda dos cartões Avisos/Faltas. Trocar o campo de unidade por botões (un, caixa, saco, pacote, garrafa, lata, kg, L, Outra), com "Outra" a abrir texto até 12 caracteres.
 - **Feito:**
