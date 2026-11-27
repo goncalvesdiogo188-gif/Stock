@@ -1,13 +1,47 @@
 # Relatórios — Stock do snack bar
 
 ## Estado atual do projeto
-- **Funciona (testado em Chromium):** APK v2.1 em `dist/` ("caffé c@ffé").
-  - Stock em grelha de secções; em cada secção: pesquisa, "Ordenar" (setas) e "Contar esta secção".
-  - Lista de compras partilhada (`purchases`), separada das Faltas. Contagem por âmbito que continua depois de fechar a app. Histórico com Hoje/Ontem/7 dias/Tudo, tipo, utilizador e resumo.
-  - Mantém utilizadores, avisos, faltas, receção, partilha Firebase e modo offline.
-- **Falta:** testar num telemóvel real (incluindo fechar a app a meio da contagem e o botão voltar do Android) e com a Firebase verdadeira.
+- **Funciona (testado em Chromium):** APK v2.2 em `dist/` ("caffé c@ffé").
+  - Início com logotipo e cartões Avisos/Faltas espaçados de forma proporcional à altura do ecrã.
+  - Folha do produto com um só "Guardar" (quantidade escrita, nome, unidade, secção e nota), sempre à vista no fundo da folha.
+  - Mantém stock em secções, ordenar, lista de compras, contagem por secção, histórico com filtros, partilha Firebase e modo offline.
+- **Falta:** testar num telemóvel real (espaços do Início, teclado verdadeiro) e com a Firebase verdadeira.
 - **Maior risco:** a partilha só foi testada contra uma imitação local da Firebase.
 - **Segurança:** a palavra-passe da chave continua no histórico do git (até ao commit `60d93c4`). Recomenda-se mudá-la.
+
+---
+
+## 2026-11-27 12:30 — Início mais arejado e um só "Guardar" na folha do produto (v2.2)
+- **Pedido:** só ajustes visuais. Mais espaço entre o logotipo e os cartões, com espaços proporcionais à altura do ecrã. Na folha do produto, tirar o "Guardar" de cima e ficar só o de baixo.
+- **Feito:**
+  - **Início:**
+    - A área entre o cabeçalho e a barra de baixo é usada toda. O logotipo desce (margem 6% da altura, entre 20 e 64 px) e os cartões ficam centrados no espaço livre por baixo dele.
+    - Espaço entre cartões: 2,6% da altura, entre 12 e 26 px. O logotipo encolhe um pouco em ecrãs baixos.
+    - A altura do cabeçalho (maior com a linha "Partilhado entre telemóveis") é medida, para nunca haver scroll.
+  - **Folha do produto:**
+    - Saiu o "Guardar" de cima. O de baixo (antes "Guardar alterações", dentro de "Mais opções") passou para fora, chama-se "Guardar" e fica fixo no fundo da folha, à vista mesmo com o teclado aberto.
+    - Grava o que mudou, como antes, e agora também a quantidade escrita no campo (antes era só o de cima que a gravava). Para isso, as duas gravações juntaram-se numa só função; os dados escritos são os mesmos de antes.
+    - Enter no campo da quantidade também grava. "−" e "+" continuam a gravar logo. "Apagar produto" continua em "Mais opções".
+  - Versão 2.2 (versionCode 13); a palavra-passe passou só por `STOCK_KS_PASS`.
+- **Ficheiros:** `app/src/main/assets/index.html`, `app/build.gradle`, `dist/StockSnackBar.apk`.
+- **Estado:**
+  - Compila. O certificado é igual e o `index.html` dentro do APK é o testado.
+  - Teste em Chromium a 390×844 e 360×640, com partilha numa imitação local da Firebase: 80 verificações novas, mais as 137 e 160 anteriores, todas OK, sem erros JS.
+    - Início, sem e com a linha da partilha, sem scroll nem sobreposições. Espaços medidos:
+      - 390×844: logotipo a 51 px do cabeçalho, 141–161 px até aos cartões, 22 px entre cartões.
+      - 360×640: 38 px, 46–66 px e 17 px.
+    - Folha: um só botão "Guardar", também com "Mais opções" aberto.
+    - Grava quantidade, Enter, nome + unidade + nota + quantidade juntos, e o histórico regista Ajuste e Editado. "Sem alterações" quando nada mudou; número inválido ou nome vazio não gravam.
+    - Fechar sem guardar com "Fechar", tocando fora e com o voltar do Android (simulado) não altera nada, nem na Firebase.
+    - Com o ecrã encolhido a 55% e 45% da altura (como com teclado), o "Guardar" fica à vista, pode ser tocado e grava.
+  - **Não testado:** num telemóvel real (teclado verdadeiro, botão voltar verdadeiro, aspeto do Início no ecrã real) e com a Firebase verdadeira.
+- **Problemas:**
+  - "Arrastar para baixo" para fechar a folha não existe na app (nunca existiu): a barra no topo da folha é só decorativa. Não foi acrescentado, porque o pedido era só visual. Fechar funciona com "Fechar", tocando fora ou com o voltar do Android.
+  - Não confirmei num telemóvel porque é que o "Guardar" de cima falhava. Uma causa provável: depois de tocar em − ou +, a quantidade já está gravada e o botão respondia "Sem alterações".
+- **Próximos passos:**
+  1. Atualizar os telemóveis para a v2.2 e ver o Início no ecrã real.
+  2. Se quiser, acrescentar "arrastar para baixo" para fechar as folhas.
+  3. Mudar a palavra-passe da chave (pendente).
 
 ---
 
