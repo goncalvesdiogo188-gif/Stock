@@ -1,14 +1,43 @@
 # Relatórios — Stock do snack bar
 
 ## Estado atual do projeto
-- **Funciona (testado em Chromium):** APK v1.8 em `dist/` ("caffé c@ffé").
-  - Ícone com a gota do logotipo; fontes Poppins/Inter incluídas na app.
-  - Início com cartões Avisos e Faltas que mostram o número por resolver.
-  - Stock com 9 secções coloridas (inclui Bar e Mercearia) e cor escolhida em "Gerir secções"; "+ Novo produto" na barra de baixo.
-  - Mantém utilizadores, histórico, avisos, faltas, contagem, receção, partilha Firebase e modo offline.
-- **Falta:** testar num telemóvel real (visual, ícone, margens, teclado) e com a base de dados Firebase verdadeira.
-- **Maior risco:** a partilha e os utilizadores só foram testados contra uma imitação local da Firebase. O comportamento real (regras, PATCH via Java, ponte Android) está por confirmar.
-- **Segurança:** a palavra-passe da chave esteve escrita no `app/build.gradle` (público) até ao commit `60d93c4`. Já foi retirada, mas continua no histórico do git. Recomenda-se mudar a palavra-passe da chave; o certificado mantém-se igual.
+- **Funciona (testado em Chromium):** APK v1.9 em `dist/` ("caffé c@ffé").
+  - Início com cartões Avisos e Faltas só com título, número laranja por resolver (escondido quando é 0) e seta.
+  - Unidade do produto escolhida por botões: un, caixa, saco, pacote, garrafa, lata, kg, L ou Outra (texto até 12 caracteres).
+  - Mantém secções coloridas, utilizadores, histórico, avisos, faltas, contagem, receção, partilha Firebase e modo offline.
+- **Falta:** testar num telemóvel real e com a base de dados Firebase verdadeira.
+- **Maior risco:** a partilha só foi testada contra uma imitação local da Firebase.
+- **Segurança:** a palavra-passe da chave continua no histórico do git (até ao commit `60d93c4`). Recomenda-se mudá-la.
+
+---
+
+## 2026-11-27 11:15 — Cartões sem legenda e unidade por botões (v1.9)
+- **Pedido:** só interface. Tirar a legenda dos cartões Avisos/Faltas. Trocar o campo de unidade por botões (un, caixa, saco, pacote, garrafa, lata, kg, L, Outra), com "Outra" a abrir texto até 12 caracteres.
+- **Feito:**
+  - Cartões: só título, número laranja no canto (escondido quando é 0) e seta. O título fica centrado na vertical.
+  - Unidade em "Novo produto" e em "Mais opções" do produto: botões numa linha que quebra quando é preciso. A unidade marcada fica a laranja.
+  - "Outra" mostra uma caixa de texto (máx. 12). Uma unidade guardada fora da lista abre em "Outra", com o texto preenchido. Se o texto ficar vazio, grava "un". Texto igual a uma da lista (ex.: "Caixas") fica com o nome da lista ("caixa").
+  - Por defeito: "un". A unidade continua pequena ao lado da quantidade.
+  - Para isto funcionar, a leitura dos dados passou a aceitar unidades fora de un/kg/L (antes eram trocadas por "un"). O texto colado em "Partilhar" também as aceita. A estrutura dos dados e a partilha não mudaram.
+  - Versão 1.9 (versionCode 10), assinada com `keystore/stock.jks`.
+- **Ficheiros:** `app/src/main/assets/index.html`, `app/build.gradle`, `dist/StockSnackBar.apk`.
+- **Estado:**
+  - Compila. O certificado é igual ao da v1.8, por isso dá para atualizar por cima.
+  - Teste em Chromium a 390×844 e 360×640, com dois telemóveis e uma imitação local da Firebase: 178 verificações OK, sem erros JS.
+    - Cartões: sem legenda; número escondido com 0, aparece com 1 aviso e 2 faltas, e chega ao outro telemóvel.
+    - Criar com cada uma das 8 unidades, com "Outra" com texto ("dúzia"), vazia (→ un), "Caixas" (→ caixa) e com 12 caracteres.
+    - Editar para cada unidade e voltar, de personalizada para kg, para "Outra" com texto e para "Outra" vazia (→ un).
+    - Os botões cabem no ecrã, sem deslocamento horizontal.
+    - Unidades antigas (un, kg, L, sem unidade → un) e uma unidade personalizada vinda da partilha aparecem bem.
+    - Partilha (as unidades chegam à base de dados e ao outro telemóvel), botão + e histórico ("unidade dúzia → kg") continuam a funcionar.
+  - **Não testado:** num telemóvel real e com a Firebase verdadeira.
+- **Problemas:**
+  - A assinatura usou `keystore/keystore.properties` (fora do git), como escolheu, em vez de `STOCK_KS_PASS`.
+  - Telemóveis ainda na v1.8 trocam as unidades novas por "un" no ecrã até serem atualizados. No servidor, a unidade só é reescrita se esse telemóvel editar o produto.
+- **Próximos passos:**
+  1. Atualizar todos os telemóveis para a v1.9 ao mesmo tempo.
+  2. Rever a unidade dos produtos existentes (ex.: garrafas, latas).
+  3. Mudar a palavra-passe da chave (pendente).
 
 ---
 
