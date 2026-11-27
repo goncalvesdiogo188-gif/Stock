@@ -72,7 +72,7 @@ button { cursor: pointer; }
 .link-btn { border: 0; background: none; color: var(--primary); font-weight: 650; font-size: 16px; padding: 8px 4px; min-height: 44px; }
 
 /* Títulos com a fonte de destaque */
-h1, h2, h3, .view-title, .sec-head .nm, .home-card .ttl, .page-head h2, .sheet h2, .user-screen h2 { font-family: "Poppins", "Inter", system-ui, sans-serif; }
+h1, h2, h3, .view-title, .sec-title, .home-card .ttl, .page-head h2, .sheet h2, .user-screen h2 { font-family: "Poppins", "Inter", system-ui, sans-serif; }
 
 /* Cabeçalho (preto) */
 header.top { background: var(--ink); color: #fff; padding-top: calc(env(safe-area-inset-top) + 12px); padding-bottom: 12px; }
@@ -109,6 +109,7 @@ h1 { font-size: 19px; margin: 0; line-height: 1.2; font-weight: 750; letter-spac
   background: var(--surface-2); padding: 0 46px 0 44px; font-size: 17px; outline: none;
 }
 .search input::placeholder { color: #8a8a8a; }
+.search input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; display: none; }
 .search input:focus { border-color: var(--primary); }
 .search .ico { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: var(--muted); pointer-events: none; }
 .search .clear {
@@ -152,17 +153,21 @@ h1 { font-size: 19px; margin: 0; line-height: 1.2; font-weight: 750; letter-spac
 
 /* Stock: secções */
 .stock-tools { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 6px; color: var(--muted); font-size: 14px; }
-.sec { margin-top: 10px; }
-.sec-head {
-  width: 100%; min-height: 52px; border: 0; background: none; display: flex; align-items: center; gap: 10px; padding: 0 4px;
-  color: var(--text); text-align: left;
+.sec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.sec-card {
+  position: relative; min-height: 96px; border: 0; border-radius: 18px; background: var(--ss); color: var(--sc);
+  display: flex; align-items: flex-end; padding: 14px 14px 14px 16px; text-align: left;
 }
-.sec-head .bar { width: 5px; height: 20px; border-radius: 3px; background: var(--sc); flex: none; }
-.sec-head .nm { flex: 1; min-width: 0; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; overflow-wrap: anywhere; color: var(--sc); }
-.sec-head .n { color: var(--sc); background: var(--ss); border-radius: 999px; min-width: 28px; height: 24px; padding: 0 8px; display: grid; place-items: center; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.sec-head .chev { width: 20px; height: 20px; color: var(--muted); transition: transform .15s; flex: none; }
-.sec-head[aria-expanded="false"] .chev { transform: rotate(-90deg); }
-.sec-empty { color: var(--muted); font-size: 14px; padding: 4px 4px 10px; }
+.sec-card:active { filter: brightness(.96); }
+.sec-card .nm { display: block; min-width: 0; font-family: "Poppins", "Inter", system-ui, sans-serif; font-size: 19px; font-weight: 700; line-height: 1.2; overflow-wrap: anywhere; }
+.sec-card .count {
+  position: absolute; top: 12px; right: 12px; min-width: 30px; height: 30px; padding: 0 9px; border-radius: 999px;
+  background: var(--sc); color: #fff; font-size: 15px; font-weight: 700; display: grid; place-items: center; font-variant-numeric: tabular-nums;
+}
+.sec-title { margin: 2px 0 0; font-size: 26px; font-weight: 700; color: var(--sc); overflow-wrap: anywhere; }
+#list { margin-top: 10px; }
+.sec-empty { color: var(--muted); font-size: 16px; text-align: center; padding: 40px 16px; }
+.row-item .nm small { display: block; font-size: 12px; font-weight: 600; color: var(--sc); margin-top: 2px; letter-spacing: .02em; }
 .row-item {
   width: 100%; border: 1px solid var(--line); border-left: 4px solid var(--sc, var(--line)); background: var(--surface); border-radius: 14px; margin-bottom: 6px; min-height: 58px;
   display: flex; align-items: center; gap: 12px; padding: 8px 16px; text-align: left; color: var(--text);
@@ -541,6 +546,10 @@ body[data-view="stock"] .toast { bottom: calc(var(--nav-h) + 72px + env(safe-are
 
 <section id="stockView" hidden>
   <div class="wrap">
+    <div id="secHead" hidden>
+      <div class="page-head"><button class="back" id="secBack" aria-label="Voltar ao Stock">‹ Stock</button></div>
+      <h2 class="sec-title" id="secPageTitle"></h2>
+    </div>
     <div class="search-row">
       <div class="search" id="searchBox">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
@@ -1145,7 +1154,7 @@ body[data-view="stock"] .toast { bottom: calc(var(--nav-h) + 72px + env(safe-are
   }
 
   var items = load();
-  var state = { filter: 'all', query: '', view: 'home' };
+  var state = { filter: 'all', query: '', view: 'home', sec: '' };
 
   // ---------- elementos ----------
   var $ = function (id) { return document.getElementById(id); };
@@ -1176,15 +1185,15 @@ body[data-view="stock"] .toast { bottom: calc(var(--nav-h) + 72px + env(safe-are
     });
   }
 
-  function rowHtml(p) {
-    return '<button class="row-item" data-id="' + esc(p.id) + '" aria-label="' + esc(p.name) + ': ' + fmt(p.qty) + ' ' + esc(p.unit) + '">' +
-      '<span class="nm">' + esc(p.name) + '</span>' +
+  function secOf(p) { return sections.find(function (x) { return norm(x.name) === norm(p.family); }); }
+  function rowHtml(p, withSec) {
+    var sec = withSec ? secOf(p) : null;
+    return '<button class="row-item" data-id="' + esc(p.id) + '"' + (withSec ? ' style="' + secStyle(sec) + '"' : '') +
+      ' aria-label="' + esc(p.name) + ': ' + fmt(p.qty) + ' ' + esc(p.unit) + '">' +
+      '<span class="nm">' + esc(p.name) + (withSec ? '<small>' + esc(p.family) + '</small>' : '') + '</span>' +
       '<span class="q">' + fmt(p.qty) + '<small>' + esc(p.unit) + '</small></span></button>';
   }
-  var closedSecs = {};
-  try { closedSecs = JSON.parse(localStorage.getItem(STORE_KEY + '-secoes-fechadas') || '{}') || {}; } catch (e) {}
-  function saveClosedSecs() { try { localStorage.setItem(STORE_KEY + '-secoes-fechadas', JSON.stringify(closedSecs)); } catch (e) {} }
-  var SVG_CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+  try { localStorage.removeItem(STORE_KEY + '-secoes-fechadas'); } catch (e) {} // secções recolhíveis já não existem
 
   // "mais mexidos": número de alterações de cada material no histórico guardado
   function activityMap() {
@@ -1200,26 +1209,46 @@ body[data-view="stock"] .toast { bottom: calc(var(--nav-h) + 72px + env(safe-are
     };
   }
 
+  // Stock em dois níveis: grelha de secções (state.sec vazio) ou página de uma secção (state.sec = id)
+  function openSec() { return state.sec ? sections.find(function (x) { return x.id === state.sec; }) || null : null; }
   function renderList() {
-    var vis = visibleItems();
-    var act = activityMap();
-    var searching = !!norm(state.query);
+    var sec = openSec();
+    if (state.sec && !sec) state.sec = ''; // a secção foi apagada
+    var act = activityMap(), q = norm(state.query), searching = !!q;
+    $('secHead').hidden = !sec;
+    $('btnSections').hidden = !!sec;
+    document.querySelector('.stock-tools').hidden = !!sec && !searching;
+    $('search').placeholder = sec ? 'Pesquisar em ' + sec.name : 'Pesquisar produto';
+    if (sec) {
+      $('secHead').setAttribute('style', secStyle(sec));
+      $('secPageTitle').textContent = sec.name;
+      elList.setAttribute('style', secStyle(sec));
+    } else elList.removeAttribute('style');
+    var inSec = sec ? items.filter(function (p) { return norm(p.family) === norm(sec.name); }) : items;
+    var vis = searching ? inSec.filter(function (p) { return norm(p.name).indexOf(q) !== -1 || (!sec && norm(p.family).indexOf(q) !== -1); }) : inSec;
     $('stockCount').textContent = searching ? vis.length + (vis.length === 1 ? ' resultado' : ' resultados') : '';
     if (searching && !vis.length) {
       elList.innerHTML = '<div class="empty">Nenhum produto encontrado para “' + esc(state.query) + '”.</div>';
       return;
     }
-    var html = '';
-    sortedSections().forEach(function (sec) {
-      var g = vis.filter(function (p) { return norm(p.family) === norm(sec.name); }).sort(sortByActivity(act));
-      if (searching && !g.length) return;
-      var open = searching || !closedSecs[sec.id];
-      html += '<div class="sec" style="' + secStyle(sec) + '"><button class="sec-head" data-sec="' + esc(sec.id) + '" aria-expanded="' + open + '">' + SVG_CHEV +
-        '<span class="bar"></span><span class="nm">' + esc(sec.name) + '</span><span class="n">' + g.length + '</span></button>';
-      if (open) html += g.length ? g.map(rowHtml).join('') : '<div class="sec-empty">Sem produtos nesta secção.</div>';
-      html += '</div>';
-    });
-    elList.innerHTML = html;
+    if (sec || searching) {
+      vis = vis.slice().sort(sec ? sortByActivity(act) : function (a, b) { return sectionRank(a.family) - sectionRank(b.family) || sortByActivity(act)(a, b); });
+      elList.innerHTML = vis.length ? vis.map(function (p) { return rowHtml(p, !sec); }).join('')
+        : '<div class="sec-empty">Ainda não há produtos aqui. Toque em <span style="white-space:nowrap">“+ Novo produto”</span> para adicionar o primeiro.</div>';
+      return;
+    }
+    elList.innerHTML = '<div class="sec-grid">' + sortedSections().map(function (x) {
+      var n = items.filter(function (p) { return norm(p.family) === norm(x.name); }).length;
+      return '<button class="sec-card" data-sec="' + esc(x.id) + '" style="' + secStyle(x) + '" aria-label="' + esc(x.name) + ': ' + n + (n === 1 ? ' produto' : ' produtos') + '">' +
+        '<span class="nm">' + esc(x.name) + '</span><span class="count">' + n + '</span></button>';
+    }).join('') + '</div>';
+  }
+  function clearSearch() { $('search').value = ''; state.query = ''; $('searchBox').classList.remove('has-text'); }
+  function goSec(id) {
+    state.sec = id || '';
+    clearSearch();
+    renderList();
+    window.scrollTo(0, 0);
   }
 
   // ---------- aviso ----------
@@ -2286,7 +2315,7 @@ body[data-view="stock"] .toast { bottom: calc(var(--nav-h) + 72px + env(safe-are
 
   // ---------- novo produto ----------
   function openNew() {
-    var first = sortedSections()[0];
+    var first = openSec() || sortedSections()[0];
     $('fFamily').innerHTML = sectionOptions(first ? first.name : '');
     $('fName').value = ''; $('fQty').value = '0'; setUnit('fUnit', 'un');
     $('nameErr').textContent = ''; $('numErr').textContent = '';
@@ -2308,8 +2337,6 @@ body[data-view="stock"] .toast { bottom: calc(var(--nav-h) + 72px + env(safe-are
     var data = { id: newId(), name: name, family: $('fFamily').value || 'Armazém', qty: qty, unit: getUnit('fUnit') };
     items.push(data);
     enqueueSet('items/' + data.id, itemData(data), logChange('new', data.name, data.id, data.unit, null, data.qty));
-    var sec = sections.find(function (x) { return norm(x.name) === norm(data.family); });
-    if (sec && closedSecs[sec.id]) { delete closedSecs[sec.id]; saveClosedSecs(); }
     save(); render();
     closeOverlay($('editOverlay'));
     toast('Produto criado');
@@ -2609,8 +2636,9 @@ body[data-view="stock"] .toast { bottom: calc(var(--nav-h) + 72px + env(safe-are
       if (currentUser()) { hideUserScreen(); return true; }
       return false; // sem utilizador escolhido: o botão voltar sai da app
     }
+    if (state.view === 'stock' && state.query) { clearSearch(); renderList(); return true; }
+    if (state.view === 'stock' && state.sec) { goSec(''); return true; }
     if (state.view !== 'home') { setView('home'); return true; }
-    if (state.query) { $('search').value = ''; state.query = ''; $('searchBox').classList.remove('has-text'); renderList(); return true; }
     return false;
   };
   document.addEventListener('keydown', function (e) {
@@ -2640,7 +2668,7 @@ body[data-view="stock"] .toast { bottom: calc(var(--nav-h) + 72px + env(safe-are
   });
   $('search').addEventListener('keydown', function (e) { if (e.key === 'Enter') this.blur(); });
   $('searchClear').addEventListener('click', function () {
-    $('search').value = ''; state.query = ''; $('searchBox').classList.remove('has-text'); renderList(); $('search').focus();
+    clearSearch(); renderList(); $('search').focus();
   });
 
   // ---------- navegação em baixo: Início · Stock · Histórico · Mais ----------
@@ -2659,7 +2687,10 @@ body[data-view="stock"] .toast { bottom: calc(var(--nav-h) + 72px + env(safe-are
     if (changed) window.scrollTo(0, 0);
   }
   $('navNotices').addEventListener('click', function () { setView('home'); });
-  $('navStock').addEventListener('click', function () { setView('stock'); });
+  $('navStock').addEventListener('click', function () {
+    if (state.view === 'stock' && state.sec) goSec(''); else setView('stock'); // tocar em Stock dentro de uma secção volta à grelha
+  });
+  $('secBack').addEventListener('click', function () { goSec(''); });
   $('navHist').addEventListener('click', function () { setView('hist'); });
   $('navMore').addEventListener('click', function () { disarm($('btnReset')); openOverlay($('moreOverlay')); });
   $('moreClose').addEventListener('click', function () { closeOverlay($('moreOverlay')); });
@@ -2676,14 +2707,8 @@ body[data-view="stock"] .toast { bottom: calc(var(--nav-h) + 72px + env(safe-are
   $('userChip').addEventListener('click', showUserScreen);
 
   elList.addEventListener('click', function (e) {
-    var h = e.target.closest('.sec-head');
-    if (h) {
-      if (norm(state.query)) return; // durante a pesquisa as secções ficam abertas
-      var id = h.dataset.sec;
-      if (closedSecs[id]) delete closedSecs[id]; else closedSecs[id] = 1;
-      saveClosedSecs(); renderList();
-      return;
-    }
+    var c = e.target.closest('.sec-card');
+    if (c) { goSec(c.dataset.sec); return; }
     var r = e.target.closest('.row-item');
     if (r) openProduct(r.dataset.id);
   });
