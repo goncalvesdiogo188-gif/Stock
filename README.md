@@ -46,12 +46,14 @@ Até 3 utilizadores (só nome, sem palavra-passe), escolhidos num ecrã inicial;
 
 ## Páginas
 
-- **Início** (abre aqui): logotipo do café e dois cartões, um abaixo do outro, **Avisos** e **Faltas**, com o número por resolver, o mais recente e um número laranja de novidades. Tocar abre a página respetiva.
+- **Início** (abre aqui): logotipo do café e dois cartões, um abaixo do outro, **Avisos** e **Faltas**, com o número laranja de itens por resolver. Tocar abre a página respetiva.
   - **Avisos**: quadro da equipa (até 300 caracteres), fixar, "Resolvido", apagar em dois toques, máximo 50. Partilhados em `lojas/<código>/notices`.
   - **Faltas**: o que falta (até 80 caracteres), "Já temos", apagar, "Limpar resolvidas", máximo 100. Partilhadas em `lojas/<código>/shopping`.
-- **Stock**: pesquisa, secções recolhíveis (padrão: Padaria, Pastelaria, Congelador, Utensílios, Limpeza, Frigorífico, Armazém), "Gerir secções" (criar, renomear, reordenar, apagar/mover) e botão "+" para novo produto. Cada linha mostra só nome e quantidade; tocar abre a folha do produto (− / +, escrever quantidade, mais opções). Secções partilhadas em `lojas/<código>/sections`; famílias antigas dos produtos tornam-se secções extra.
-- **Histórico**: alterações de stock com pesquisa por produto e filtro por utilizador.
-- **Mais**: receber mercadoria, contagem rápida, enviar/receber stock em texto, partilha, utilizadores e dados de exemplo.
+- **Stock**: grelha de cartões por secção (cor, nome e número de produtos), pesquisa geral, "Gerir secções" (criar, renomear, reordenar, mudar a cor, apagar/mover) e "+ Novo produto". Tocar num cartão abre a secção: pesquisa na secção, lista (nome e quantidade; tocar abre a folha do produto), "Ordenar" (setas ▲ ▼; ordem no campo opcional `order` de cada produto; sem ordem, alfabética) e "Contar esta secção". Secções partilhadas em `lojas/<código>/sections`.
+- **Lista de compras** (em Mais): lista manual, separada das Faltas (até 60 caracteres, comprado, apagar, "Apagar comprados", copiar, WhatsApp; máximo 100). Partilhada em `lojas/<código>/purchases`. Cada falta tem "Passar para compras".
+- **Contagem rápida**: pergunta o âmbito (Tudo ou uma secção). O progresso fica guardado no telemóvel e, se a app fechar a meio, oferece "Continuar contagem".
+- **Histórico**: atalhos Hoje / Ontem / 7 dias / Tudo, filtros por tipo e utilizador, pesquisa por produto e um resumo do filtro atual.
+- **Mais**: lista de compras, receber mercadoria, contagem rápida, enviar/receber stock em texto, partilha, utilizadores e dados de exemplo.
 
 Visual: fundo branco; preto e laranja (cores do logotipo) no cabeçalho e nos detalhes. Fontes locais (OFL) em `app/src/main/assets/fonts`: Poppins nos títulos e Inter no texto. Cada secção tem uma cor (paleta de 9, escolhida em "Gerir secções", campo opcional `color` em `lojas/<código>/sections`). Secções Bar e Mercearia acrescentadas uma vez (marca em `lojas/<código>/flags/secoesBarMercearia`). As secções antigas Pão, Detergentes, Lácteos e Comida foram retiradas na v1.7 (os produtos passaram para as secções novas).
 
