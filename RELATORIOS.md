@@ -1,13 +1,61 @@
 # Relatórios — Stock do snack bar
 
 ## Estado atual do projeto
-- **Funciona (testado em Chromium):** APK v2.0 em `dist/` ("caffé c@ffé").
-  - Stock em dois níveis: grelha de cartões por secção (cor, nome e número de produtos) e página de cada secção com "‹ Stock", pesquisa e lista.
-  - Pesquisa geral no topo do Stock, com a secção de cada produto. Unidade por botões; Início com cartões Avisos/Faltas.
-  - Mantém utilizadores, histórico, avisos, faltas, contagem, receção, partilha Firebase e modo offline.
-- **Falta:** testar num telemóvel real (incluindo o botão voltar do Android) e com a Firebase verdadeira.
+- **Funciona (testado em Chromium):** APK v2.1 em `dist/` ("caffé c@ffé").
+  - Stock em grelha de secções; em cada secção: pesquisa, "Ordenar" (setas) e "Contar esta secção".
+  - Lista de compras partilhada (`purchases`), separada das Faltas. Contagem por âmbito que continua depois de fechar a app. Histórico com Hoje/Ontem/7 dias/Tudo, tipo, utilizador e resumo.
+  - Mantém utilizadores, avisos, faltas, receção, partilha Firebase e modo offline.
+- **Falta:** testar num telemóvel real (incluindo fechar a app a meio da contagem e o botão voltar do Android) e com a Firebase verdadeira.
 - **Maior risco:** a partilha só foi testada contra uma imitação local da Firebase.
 - **Segurança:** a palavra-passe da chave continua no histórico do git (até ao commit `60d93c4`). Recomenda-se mudá-la.
+
+---
+
+## 2026-11-27 12:05 — Compras, contagem por secção, histórico com filtros, ordenar produtos (v2.1)
+- **Pedido:** só interface e dados novos opcionais, sem mudar as regras da Firebase. Lista de compras em "Mais"; contagem por âmbito com continuar; histórico com atalhos, tipo e resumo; ordenar produtos à mão em cada secção.
+- **Feito:**
+  - **Lista de compras** ("Mais" → "Lista de compras"):
+    - Caixa "O que vais comprar?" (máx. 60) e "Adicionar", também com Enter. Não repete um texto que já esteja por comprar.
+    - Cada item tem um círculo de visto (comprado desce para o fim e fica riscado) e "Apagar" em dois toques.
+    - Botões "Copiar", "Enviar por WhatsApp" (só o que falta comprar) e "Apagar comprados" (dois toques, só aparece se houver comprados). Máximo 100 itens.
+    - Partilhada em `lojas/<código>/purchases`, uma escrita por item na fila offline normal. Nada é escrito em `shopping`.
+    - Nas Faltas por resolver, um texto laranja discreto "Passar para compras" copia a falta para a lista; a falta mantém-se.
+  - **Contagem rápida:**
+    - Ao começar pelo menu, pergunta o âmbito: "Tudo" ou uma secção (com a cor e o número de produtos; secções vazias desativadas).
+    - Na página de uma secção, "Contar esta secção" começa logo. O passo mostra "3 de 5 · Bar".
+    - O resto mantém-se: produto a produto, barra, vazio = "Certo", "Anterior", "Terminar", resumo, aplicar, histórico "Contagem".
+    - O progresso fica no telemóvel, no mesmo registo dos outros dados. Ao abrir a app com uma contagem a meio, aparece "Continuar contagem" ou "Começar de novo". O mesmo acontece ao tocar em "Contagem rápida" ou "Contar esta secção".
+  - **Histórico:**
+    - Atalhos Hoje / Ontem / 7 dias (hoje e os 6 dias anteriores) / Tudo, com Tudo por defeito.
+    - Filtro "Tipo" (Todos, Ajuste, Receção, Contagem, Novo/Apagado) ao lado de "Utilizador". Combinam com a pesquisa.
+    - Resumo por baixo do título, ex.: "12 alterações hoje", "1 receção ontem", "1 novo ou apagado nos últimos 7 dias · Rui".
+  - **Ordenar:**
+    - Na secção com 2 ou mais produtos, "Ordenar" passa ao modo de ordenação: só nome e setas ▲ ▼; a pesquisa e "+ Novo produto" escondem-se. "Concluído" (ou o voltar do Android) sai.
+    - Cada movimento grava a ordem da secção inteira num só pedido (campo opcional `order` nos produtos).
+    - Produto novo numa secção ordenada entra no fim. Ao mudar de secção, o produto vai para o fim da nova (ou perde a ordem, se a nova não tiver).
+  - Ajuste visual: a caixa de texto de Faltas e Compras passou a 16 px, para "O que vais comprar?" caber inteiro a 360 px.
+  - README atualizado. Versão 2.1 (versionCode 12); a palavra-passe passou só por `STOCK_KS_PASS`.
+- **Ficheiros:** `app/src/main/assets/index.html`, `app/build.gradle`, `README.md`, `dist/StockSnackBar.apk`.
+- **Estado:**
+  - Compila. O certificado é igual ao da v2.0 e o `index.html` dentro do APK é o testado.
+  - Teste em Chromium a 390×844 e 360×640, com dois telemóveis e uma imitação local da Firebase: 137 verificações novas e as 160 da v2.0, todas OK, sem erros JS.
+    - Compras: adicionar, comprar, apagar, apagar comprados, copiar e WhatsApp (endereço verificado, não enviado). Passar de Faltas. O outro telemóvel vê tudo; nó `purchases` separado.
+    - Compras offline: o outro telemóvel adiciona e marca sem rede, fecha e reabre a app, e tudo é enviado quando a rede volta.
+    - Contagem: Tudo e por secção, pela ordem da secção, a partir da página da secção. Continuar depois de recarregar a página (como fechar a app). Diferença aplicada e registada.
+    - Histórico: 160 combinações de período × tipo × utilizador × pesquisa, com entradas de ontem, de há 3 e de há 10 dias. O número de linhas e o resumo batem certo.
+    - Ordenação: mover, concluir, voltar, persistência depois de fechar, ordem no outro telemóvel e na Firebase. Produto novo no fim; secção sem ordem em ordem alfabética.
+    - Dados antigos (sem compras, ordem nem contagem) abrem bem.
+    - Sem texto cortado (incluindo o texto das listas de filtro), sobreposições nem deslocamento horizontal.
+    - Continuam a funcionar: utilizadores, avisos, faltas, receção, partilha e secções.
+  - **Não testado:** num telemóvel real (fechar a app de verdade, botão voltar, copiar, abrir o WhatsApp) e com a Firebase verdadeira.
+- **Problemas:**
+  - Dentro da secção, a ordem sem ordem guardada passou a alfabética, como pedido. Antes era pelos "mais mexidos", não alfabética.
+  - Telemóveis na v2.0 ignoram a lista de compras e a ordem. Se um deles usar "Repor dados de exemplo" ou criar a partilha, a ordem perde-se.
+  - O histórico guarda só as últimas 200 alterações, por isso "7 dias" pode não mostrar tudo numa semana muito movimentada.
+- **Próximos passos:**
+  1. Atualizar todos os telemóveis para a v2.1 no mesmo dia.
+  2. Ordenar à mão as secções mais usadas e experimentar "Contar esta secção".
+  3. Mudar a palavra-passe da chave (pendente).
 
 ---
 
