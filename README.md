@@ -46,9 +46,12 @@ Até 3 utilizadores (só nome, sem palavra-passe), escolhidos num ecrã inicial;
 
 ## Páginas
 
-- **Avisos** (abre aqui): quadro de avisos da equipa (até 300 caracteres), com fixar, "Resolvido" e apagar em dois toques. Guarda no máximo 50; saem primeiro os resolvidos mais antigos. Ponto laranja no separador quando há avisos novos de outros utilizadores. Partilhados em `lojas/<código>/notices` (um nó por aviso); não entram no histórico do stock.
-- **Stock**: pesquisa, famílias, − e +, nota por produto; os mais mexidos primeiro.
-- **Histórico**: alterações de stock com filtro por utilizador.
-- **Mais**: lista de compras manual (partilhada em `lojas/<código>/shopping`), receber mercadoria, contagem rápida, enviar/receber stock em texto, partilha, utilizadores e dados de exemplo.
+- **Início** (abre aqui), com dois separadores:
+  - **Avisos**: quadro da equipa (até 300 caracteres), fixar, "Resolvido", apagar em dois toques, máximo 50. Partilhados em `lojas/<código>/notices`.
+  - **Faltas**: o que falta (até 80 caracteres), "Já temos", apagar, "Limpar resolvidas", máximo 100. Partilhadas em `lojas/<código>/shopping` (os itens da antiga lista de compras aparecem aqui).
+  - Ponto laranja em cada separador quando há novidades de outros utilizadores.
+- **Stock**: pesquisa, secções recolhíveis (padrão: Padaria, Pastelaria, Congelador, Utensílios, Limpeza, Frigorífico, Armazém), "Gerir secções" (criar, renomear, reordenar, apagar/mover) e botão "+" para novo produto. Cada linha mostra só nome e quantidade; tocar abre a folha do produto (− / +, escrever quantidade, mais opções). Secções partilhadas em `lojas/<código>/sections`; famílias antigas dos produtos tornam-se secções extra.
+- **Histórico**: alterações de stock com pesquisa por produto e filtro por utilizador.
+- **Mais**: receber mercadoria, contagem rápida, enviar/receber stock em texto, partilha, utilizadores e dados de exemplo.
 
-A app não usa mínimos nem sugere compras. Produtos antigos com o campo `min` carregam normalmente; o valor é mantido nos dados mas não é usado. O texto de enviar/receber stock tem o formato `Família | Nome | quantidade unidade` (textos antigos com `| min N` continuam a ser aceites).
+A app não usa mínimos. Produtos antigos com `min` carregam normalmente (o valor é mantido, sem uso). Texto de enviar/receber: `Secção | Nome | quantidade unidade` (textos antigos com `| min N` continuam a ser aceites).
