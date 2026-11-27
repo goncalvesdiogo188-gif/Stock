@@ -1,14 +1,81 @@
 # Relatórios — Stock do snack bar
 
 ## Estado atual do projeto
-- **Funciona (testado em Chromium):** APK v1.7 em `dist/`.
-  - App branca, com cabeçalho preto e detalhes laranja.
-  - Início com o logotipo do café e os cartões Avisos e Faltas, um abaixo do outro, com novidades.
-  - Stock só com as 7 secções novas.
-  - Mantém a folha do produto, a gestão de secções, o histórico com pesquisa, os utilizadores, a receção, a contagem, a partilha Firebase e o modo offline.
+- **Funciona (testado em Chromium):** APK v1.8 em `dist/` ("caffé c@ffé").
+  - Ícone com a gota do logotipo; fontes Poppins/Inter incluídas na app.
+  - Início com cartões Avisos e Faltas que mostram o número por resolver.
+  - Stock com 9 secções coloridas (inclui Bar e Mercearia) e cor escolhida em "Gerir secções"; "+ Novo produto" na barra de baixo.
+  - Mantém utilizadores, histórico, avisos, faltas, contagem, receção, partilha Firebase e modo offline.
 - **Falta:** testar num telemóvel real (visual, ícone, margens, teclado) e com a base de dados Firebase verdadeira.
 - **Maior risco:** a partilha e os utilizadores só foram testados contra uma imitação local da Firebase. O comportamento real (regras, PATCH via Java, ponte Android) está por confirmar.
 - **Segurança:** a palavra-passe da chave esteve escrita no `app/build.gradle` (público) até ao commit `60d93c4`. Já foi retirada, mas continua no histórico do git. Recomenda-se mudar a palavra-passe da chave; o certificado mantém-se igual.
+
+---
+
+## 2026-11-27 10:53 — Identidade caffé c@ffé, fontes, cores por secção, Bar e Mercearia
+- **Pedido:**
+  - Nome "Stock caffé c@ffé" e "caffé c@ffé" como nome da app, com ícone da gota.
+  - Cartões com o número por resolver, em vez das novidades.
+  - Fontes de destaque e de texto, incluídas na app.
+  - Cores por secção, escolhidas em "Gerir secções".
+  - Secções Bar e Mercearia.
+  - O "+" não pode tapar conteúdo.
+- **Feito:**
+  - **Identidade:**
+    - Cabeçalho e `<title>` "Stock caffé c@ffé". `app_name` = "caffé c@ffé" (confirmado no APK: `application-label:'caffé c@ffé'`).
+    - Ícone adaptativo: fundo `#1B1B1B`, gota laranja com anel branco e círculo preto, dentro da zona segura (54 de 108 dp). Tem versão monocromática para os ícones temáticos do Android 13+.
+    - A marca do cabeçalho já era a gota. O logotipo do Início e do ecrã de utilizadores mantém-se ("caffé" pequeno sobre "c@ffé" grande).
+  - **Cartões do Início:**
+    - Sem o ícone escuro.
+    - Círculo laranja no canto superior direito com o número de Avisos/Faltas por resolver, escondido quando é 0.
+    - Título em Poppins, uma linha discreta ("Sem avisos", "Não falta nada" ou o texto do mais recente) e a seta.
+    - Removidos o número e o ponto de "novidades", incluindo o ponto na barra de baixo.
+  - **Tipografia:**
+    - Poppins 600/700 nos títulos (cabeçalho, secções, páginas, cartões, janelas) e Inter 400–700 no texto.
+    - Ficheiros woff2 (subconjunto latino, cobre os acentos do português) em `app/src/main/assets/fonts`, com as licenças OFL, carregados por `@font-face` local. Foram obtidos do registo npm (@fontsource, v5.1.0).
+    - Nome da secção em maiúsculas com espaçamento, produto em peso 500, quantidade em 700 e maior.
+  - **Cores por secção:**
+    - Paleta de 9: laranja, âmbar, verde, verde-escuro, azul, roxo, rosa, castanho, cinzento-azulado. Cada cor tem um tom forte com contraste ≥ 4,5:1 sobre branco (o laranja escurecido para `#BA520A` por isso) e uma variante suave para fundos.
+    - Cada secção tem uma barra e um título na sua cor, o número num fundo suave, um friso de 4 px à esquerda dos produtos e a quantidade na mesma cor. A folha do produto mostra a secção na sua cor.
+    - "Gerir secções": círculo da cor ao lado do nome; tocar abre as 9 cores. A escolha grava `sections/<id>/color`, um campo opcional.
+    - Secções sem cor guardada usam a de origem pelo nome; outras usam uma cor calculada a partir do id, sempre a mesma.
+    - Cores de origem: Padaria âmbar, Pastelaria rosa, Congelador azul, Utensílios cinzento-azulado, Limpeza verde, Frigorífico roxo, Armazém castanho, Bar laranja, Mercearia verde-escuro.
+  - **Bar e Mercearia:**
+    - Fazem parte das secções de origem.
+    - Telemóveis e partilhas já existentes acrescentam-nas uma só vez, só se ainda não existirem. A marca `lojas/<código>/flags/secoesBarMercearia` vai no mesmo PATCH, para nenhum telemóvel as recriar depois de alguém as apagar. Sem partilha, a marca fica no telemóvel.
+    - O exemplo põe bebidas no Bar e café, açúcar e chocolate na Mercearia.
+  - **"+":**
+    - Passa a "+ Novo produto", encostado à direita numa faixa da barra de baixo, só na página Stock. Nunca fica por cima da lista, e a lista tem espaço em baixo para acabar acima da barra.
+    - Com o teclado aberto (o ecrã encolhe mais de 25% com um campo ativo), a barra de baixo esconde-se e volta quando o teclado fecha.
+    - No Stock, as mensagens rápidas aparecem acima do botão.
+  - Versão 1.8 (versionCode 9), assinada com `keystore/stock.jks`; a palavra-passe só via `STOCK_KS_PASS`.
+- **Ficheiros:**
+  - Alterados: `app/src/main/assets/index.html`, `app/src/main/res/values/strings.xml`, `app/src/main/res/drawable/ic_coffee.xml`, `app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml`, `app/build.gradle`, `README.md`, `dist/StockSnackBar.apk`.
+  - Criados: `app/src/main/assets/fonts/` (6 woff2 e 2 licenças), `app/src/main/res/drawable/ic_coffee_mono.xml`.
+- **Estado:**
+  - Compila. Assinatura verificada: o certificado é o mesmo. As fontes estão dentro do APK.
+  - Teste em Chromium a 390×844 e 360×640 (210 verificações, todas OK três vezes, sem erros JS):
+    - Título do cabeçalho.
+    - Cartões: círculo laranja no canto, só quando é maior que 0, a contar os itens por resolver; atualizam com dois telemóveis (resolvido noutro telemóvel → sem número).
+    - 9 secções sem duplicados e com 9 cores diferentes; Padaria em âmbar no título, barra, friso e quantidade.
+    - Mudar a cor (guardada e partilhada com o outro telemóvel); secções antigas sem cor recebem a de origem.
+    - Bar e Mercearia acrescentadas uma vez numa partilha antiga; um Bar apagado não volta quando outro telemóvel se liga.
+    - Poppins e Inter carregadas, sem nenhum pedido a sites externos.
+    - "+ Novo produto" dentro da barra de baixo; o fim da lista não fica tapado.
+    - Teclado simulado: barra escondida e pesquisa visível; barra volta com o campo ainda ativo.
+    - Sem texto cortado.
+    - Utilizadores, histórico, avisos, faltas, contagem, receção, partilha, offline e dados antigos continuam a passar.
+  - Ícone: vista prévia do desenho com as máscaras redonda e quadrada.
+  - **Não testado:** num telemóvel real (ícone no launcher, teclado verdadeiro, barras do sistema) e com a Firebase verdadeira.
+- **Problemas:**
+  - O pedido dizia "só interface; não mexer em dados", mas também pedia a cor guardada em `sections` e Bar/Mercearia na lista partilhada. Por isso foram acrescentados o campo opcional `color` e o nó `flags/secoesBarMercearia`; nada existente foi alterado. As regras da Firebase não mudaram.
+  - A paleta tem 9 cores em vez de 8: Mercearia pedia "verde-escuro" e Limpeza "verde", e ficariam iguais.
+  - O "+" deixou de ser um círculo flutuante: passou para a barra de baixo, para nunca tapar a quantidade de nenhum produto.
+  - Corrigido durante o trabalho: a primeira versão escondia a barra de baixo sempre que um campo tinha o foco, e a barra não voltava depois de fechar o teclado com o botão voltar.
+- **Próximos passos:**
+  1. Atualizar todos os telemóveis e ver o ícone novo no ecrã inicial do Android.
+  2. Escolher em "Gerir secções" as cores finais de cada secção.
+  3. Mudar a palavra-passe da chave (pendente).
 
 ---
 
