@@ -1,15 +1,17 @@
 <resources>
-    <color name="bg">#0E0E0E</color>
-    <color name="brand">#FF7A00</color>
-    <color name="icon_bg">#141414</color>
-    <color name="icon_fg">#FF7A00</color>
-    <style name="AppTheme" parent="android:Theme.Material.NoActionBar">
+    <color name="bg">#FFFFFF</color>
+    <color name="ink">#1B1B1B</color>
+    <color name="brand">#F07B1D</color>
+    <color name="icon_bg">#1B1B1B</color>
+    <color name="icon_fg">#F07B1D</color>
+    <!-- Fundo branco; barra de estado preta como o cabeçalho da app. -->
+    <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@color/bg</item>
         <item name="android:colorPrimary">@color/brand</item>
         <item name="android:colorAccent">@color/brand</item>
-        <item name="android:statusBarColor">@color/bg</item>
-        <item name="android:navigationBarColor">@color/bg</item>
+        <item name="android:statusBarColor">@color/ink</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowLightNavigationBar">false</item>
+        <!-- Android 8.0 não tem ícones escuros na barra de navegação: fica preta. -->
+        <item name="android:navigationBarColor">@color/ink</item>
     </style>
 </resources>

@@ -46,12 +46,13 @@ Até 3 utilizadores (só nome, sem palavra-passe), escolhidos num ecrã inicial;
 
 ## Páginas
 
-- **Início** (abre aqui), com dois separadores:
+- **Início** (abre aqui): logotipo do café e dois cartões, um abaixo do outro, **Avisos** e **Faltas**, com o número por resolver, o mais recente e um número laranja de novidades. Tocar abre a página respetiva.
   - **Avisos**: quadro da equipa (até 300 caracteres), fixar, "Resolvido", apagar em dois toques, máximo 50. Partilhados em `lojas/<código>/notices`.
-  - **Faltas**: o que falta (até 80 caracteres), "Já temos", apagar, "Limpar resolvidas", máximo 100. Partilhadas em `lojas/<código>/shopping` (os itens da antiga lista de compras aparecem aqui).
-  - Ponto laranja em cada separador quando há novidades de outros utilizadores.
+  - **Faltas**: o que falta (até 80 caracteres), "Já temos", apagar, "Limpar resolvidas", máximo 100. Partilhadas em `lojas/<código>/shopping`.
 - **Stock**: pesquisa, secções recolhíveis (padrão: Padaria, Pastelaria, Congelador, Utensílios, Limpeza, Frigorífico, Armazém), "Gerir secções" (criar, renomear, reordenar, apagar/mover) e botão "+" para novo produto. Cada linha mostra só nome e quantidade; tocar abre a folha do produto (− / +, escrever quantidade, mais opções). Secções partilhadas em `lojas/<código>/sections`; famílias antigas dos produtos tornam-se secções extra.
 - **Histórico**: alterações de stock com pesquisa por produto e filtro por utilizador.
 - **Mais**: receber mercadoria, contagem rápida, enviar/receber stock em texto, partilha, utilizadores e dados de exemplo.
+
+Visual: fundo branco; preto e laranja (cores do logotipo) no cabeçalho e nos detalhes. As secções antigas Pão, Detergentes, Lácteos e Comida foram retiradas na v1.7 (os produtos passaram para as secções novas).
 
 A app não usa mínimos. Produtos antigos com `min` carregam normalmente (o valor é mantido, sem uso). Texto de enviar/receber: `Secção | Nome | quantidade unidade` (textos antigos com `| min N` continuam a ser aceites).

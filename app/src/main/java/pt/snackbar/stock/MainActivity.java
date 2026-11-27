@@ -42,12 +42,15 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
 
-        // A interface usa sempre o tema escuro (laranja e preto).
-        boolean night = true;
-        int bg = Color.parseColor("#0E0E0E");
+        // Interface branca com cabeçalho preto: a barra de estado fica preta (junto ao cabeçalho)
+        // e a barra de navegação do sistema fica branca (junto à barra de navegação da app).
+        int bg = Color.WHITE;
+        int ink = Color.parseColor("#1B1B1B");
 
         FrameLayout root = new FrameLayout(this);
         root.setBackgroundColor(bg);
+        final View statusBg = new View(this);
+        statusBg.setBackgroundColor(ink);
 
         web = new WebView(this);
         web.setBackgroundColor(bg);
@@ -70,6 +73,7 @@ public class MainActivity extends Activity {
             }
         });
 
+        root.addView(statusBg, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 0));
         root.addView(web, new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         setContentView(root);
@@ -83,13 +87,19 @@ public class MainActivity extends Activity {
             if (c != null) {
                 int mask = WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
                         | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
-                c.setSystemBarsAppearance(night ? 0 : mask, mask);
+                // ícones claros na barra de estado (fundo preto) e escuros na barra de navegação (fundo branco)
+                c.setSystemBarsAppearance(WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS, mask);
             }
             root.setOnApplyWindowInsetsListener((v, insets) -> {
                 Insets i = insets.getInsets(WindowInsets.Type.systemBars()
                         | WindowInsets.Type.displayCutout()
                         | WindowInsets.Type.ime());
-                v.setPadding(i.left, i.top, i.right, i.bottom);
+                FrameLayout.LayoutParams sp = (FrameLayout.LayoutParams) statusBg.getLayoutParams();
+                sp.height = i.top;
+                statusBg.setLayoutParams(sp);
+                FrameLayout.LayoutParams wp = (FrameLayout.LayoutParams) web.getLayoutParams();
+                wp.setMargins(i.left, i.top, i.right, i.bottom);
+                web.setLayoutParams(wp);
                 return WindowInsets.CONSUMED;
             });
         }
