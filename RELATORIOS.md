@@ -1,10 +1,93 @@
 # Relatórios — Stock do snack bar
 
 ## Estado atual do projeto
-- **Funciona (testado em Chromium):** APK v1.5 em `dist/`. Páginas Avisos (quadro da equipa, abre aqui), Stock, Histórico e Mais. Sem mínimos nem reposição. Mais tem lista de compras manual, receção, contagem rápida e notas por produto. Mantém stock offline, partilha opcional via Firebase, até 3 utilizadores e histórico de 200 alterações.
+- **Funciona (testado em Chromium):** APK v1.6 em `dist/`.
+  - Início com Avisos e Faltas.
+  - Stock por secções recolhíveis e geridas pela equipa, linhas só com nome e quantidade, folha do produto, botão "+" para novo produto.
+  - Histórico com pesquisa por produto.
+  - Mantém utilizadores, receção, contagem, partilha Firebase, modo offline e dados antigos.
 - **Falta:** testar num telemóvel real (visual, ícone, margens, teclado) e com a base de dados Firebase verdadeira.
 - **Maior risco:** a partilha e os utilizadores só foram testados contra uma imitação local da Firebase. O comportamento real (regras, PATCH via Java, ponte Android) está por confirmar.
 - **Segurança:** a palavra-passe da chave esteve escrita no `app/build.gradle` (público) até ao commit `60d93c4`. Já foi retirada, mas continua no histórico do git. Recomenda-se mudar a palavra-passe da chave; o certificado mantém-se igual.
+
+---
+
+## 2026-11-27 10:03 — Avisos e Faltas, Stock por secções, folha do produto
+- **Pedido:**
+  - Início com separadores Avisos e Faltas.
+  - Stock por secções geridas pela equipa.
+  - Linhas só com nome e quantidade, com uma folha do produto para as alterações.
+  - Pesquisa por produto no histórico.
+  - O pedido dizia substituir "o anterior ainda não executado". A v1.5 já tinha sido entregue, por isso este trabalho foi feito por cima dela.
+- **Feito:**
+  - **Início (separador "Início" na barra):**
+    - Controlo segmentado Avisos | Faltas, com o ativo a laranja e um ponto laranja de novidades em cada um. O ponto da barra aparece se houver novidades em qualquer dos dois.
+    - Avisos sem alterações.
+  - **Faltas:**
+    - Campo "O que falta?" (80 caracteres, com contador) e "Adicionar". Lista do mais recente para o mais antigo, com quem e hora.
+    - "Já temos" passa o item para "Resolvidas", recolhida por defeito; "Volta a faltar" desfaz. Apagar e "Limpar resolvidas" pedem dois toques.
+    - Máximo de 100: saem primeiro as resolvidas mais antigas.
+    - Reutiliza `lojas/<código>/shopping` com o mesmo formato (text, done, ts, user; acrescenta `uid` opcional para o ponto de novidades). Escritas de um só item, fila offline.
+    - "Lista de compras" saiu do menu Mais; os itens antigos aparecem nas Faltas sem migração de dados.
+  - **Stock:**
+    - Pesquisa no topo.
+    - Secções por defeito: Padaria, Pastelaria, Congelador, Utensílios, Limpeza, Frigorífico, Armazém. Cada uma é recolhível, com nome e número de produtos; as fechadas ficam guardadas no telemóvel. A pesquisa abre as secções e mostra só as que têm resultados.
+    - Famílias antigas dos produtos (Pão, Comida, Lácteos…) tornam-se secções extra, criadas automaticamente. Nada é apagado.
+    - Secções partilhadas em `lojas/<código>/sections/<id>` = {name, order}. O id vem do nome, por isso dois telemóveis a criar a mesma secção escrevem no mesmo nó; duplicados com o mesmo nome são limpos.
+  - **Gerir secções:**
+    - Criar (sem nomes repetidos).
+    - Renomear: muda a secção e os produtos dela num só PATCH.
+    - Subir/descer: reescreve a ordem de todas num só PATCH.
+    - Apagar uma secção vazia: dois toques.
+    - Apagar uma secção com produtos: pergunta para onde os mover, depois "Mover e apagar" com dois toques, num só PATCH.
+  - **Botão flutuante "+":** novo produto com nome, secção, quantidade inicial e unidade. Fica no histórico como "Novo".
+  - **Linhas:** só nome e quantidade (número grande, unidade pequena ao lado). Sem botões, notas nem ícones.
+  - **Folha do produto (ao tocar numa linha):**
+    - Nome, secção e quantidade grande. − e + de 64 px; campo numérico com "Guardar" (grava o valor exato).
+    - "Mais opções": nome, unidade, secção, nota e apagar com dois toques. A edição grava só esses campos, sem tocar na quantidade, para não apagar um + feito noutro telemóvel ao mesmo tempo.
+    - Se outro telemóvel mudar o produto, a folha aberta atualiza; se o apagar, a folha fecha com um aviso.
+  - **Histórico:** pesquisa por produto e filtro por utilizador. Apagar um produto mantém as entradas antigas.
+  - "Repor dados de exemplo" usa as novas secções. O texto de enviar/receber passa a usar a secção na 1.ª coluna; receção e contagem seguem a ordem das secções.
+  - Cabeçalho: "N produtos".
+  - Versão 1.6 (versionCode 7). Assinada com `keystore/stock.jks`; a palavra-passe só via `STOCK_KS_PASS`.
+- **Ficheiros:** `app/src/main/assets/index.html`, `app/build.gradle`, `README.md`, `dist/StockSnackBar.apk` (alterados).
+- **Estado:**
+  - Compila. Assinatura verificada: o certificado é o mesmo.
+  - Novo teste em Chromium (151 verificações, todas OK, sem erros JS):
+    - **Dados antigos v1.5:** famílias antigas viram secções extra com os produtos visíveis; `min` e nota preservados; lista de compras antiga aparece nas Faltas.
+    - **Ecrãs a 390×844 e 360×640:**
+      - utilizadores (limite 3);
+      - Avisos;
+      - Faltas: adicionar, limite 80, "Já temos", apagar e limpar com dois toques;
+      - secções: ordem, contagens, recolher lembrado após recarregar, pesquisa;
+      - linhas só com nome e quantidade;
+      - novo produto (incluindo nome repetido);
+      - folha: − e +, valor escrito, número inválido, editar nome, secção e unidade, apagar;
+      - histórico com pesquisa e filtro;
+      - gerir secções: criar, repetida, reordenar, renomear com produtos, apagar vazia, apagar com mover;
+      - receção, contagem, texto, repor exemplo, voltar;
+      - sem texto cortado em nenhuma página ou janela, e o fim da lista não fica tapado pela barra nem pelo "+".
+    - **Dois telemóveis simulados:**
+      - secções criadas na Firebase;
+      - utilizadores, Faltas e pontos de novidade partilhados;
+      - escritas simultâneas em faltas diferentes;
+      - offline;
+      - secção nova, reordenada e renomeada (com os produtos) vista no outro telemóvel;
+      - + simultâneo nos dois soma;
+      - folha aberta atualiza;
+      - histórico partilhado;
+      - limite de 100 local e na Firebase.
+  - Os testes anteriores (v1.5) usavam os botões − e + nas linhas, que já não existem. Os fluxos principais foram cobertos no teste novo. O limite de 50 avisos e o conflito apagar/fixar não foram repetidos, porque esse código não mudou.
+  - **Não testado:** num telemóvel real e com a Firebase verdadeira.
+- **Problemas:**
+  - Encontrado e corrigido: o botão "Renomear" das secções dava erro JS (procurava o campo numa linha já redesenhada).
+  - O botão "+" flutuante tapa a linha que lhe fica por baixo enquanto se desliza, como qualquer botão flutuante. No fim da lista nada fica tapado.
+  - Se alguém apagar todas as secções, as 7 de origem voltam a ser criadas.
+  - Telemóveis com v1.5 ou anterior ligados à partilha veem as secções novas como "Comida" e podem mudá-las ao editar. Todos devem atualizar.
+- **Próximos passos:**
+  1. Atualizar todos os telemóveis para a v1.6 e verificar as secções de produtos antigos.
+  2. Confirmar no telemóvel que o teclado numérico abre na folha do produto e não tapa o "Guardar".
+  3. Mudar a palavra-passe da chave (pendente).
 
 ---
 
