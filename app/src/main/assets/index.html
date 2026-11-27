@@ -5,9 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#1b1b1b">
-<title>Stock do snack bar</title>
+<title>Stock caffé c@ffé</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%23141414'/%3E%3Cpath d='M5 9h11v4a5 5 0 0 1-5 5H10a5 5 0 0 1-5-5V9zm11 1h1.5a2.5 2.5 0 0 1 0 5H15.6' fill='none' stroke='%23ff7a00' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M8 4.5c0 1 1 1 1 2M11 4.5c0 1 1 1 1 2' stroke='%23ff7a00' stroke-width='1.4' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
 <style>
+/* Fontes locais (licença OFL, em assets/fonts): Poppins para títulos, Inter para texto */
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/inter-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 500; font-display: swap; src: url("fonts/inter-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 600; font-display: swap; src: url("fonts/inter-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 700; font-display: swap; src: url("fonts/inter-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Poppins"; font-style: normal; font-weight: 600; font-display: swap; src: url("fonts/poppins-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Poppins"; font-style: normal; font-weight: 700; font-display: swap; src: url("fonts/poppins-latin-700-normal.woff2") format("woff2"); }
+
 /* Tema: fundo branco; preto e laranja só no cabeçalho e nos detalhes (cores do logotipo) */
 :root {
   --bg: #ffffff;
@@ -37,7 +45,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: 17px;
   line-height: 1.4;
   padding-left: env(safe-area-inset-left);
@@ -62,6 +70,9 @@ button { cursor: pointer; }
 .btn-danger.armed, .btn-warn-armed { background: var(--danger) !important; color: #fff !important; }
 .btn-block { width: 100%; margin-top: 10px; }
 .link-btn { border: 0; background: none; color: var(--primary); font-weight: 650; font-size: 16px; padding: 8px 4px; min-height: 44px; }
+
+/* Títulos com a fonte de destaque */
+h1, h2, h3, .view-title, .sec-head .nm, .home-card .ttl, .page-head h2, .sheet h2, .user-screen h2 { font-family: "Poppins", "Inter", system-ui, sans-serif; }
 
 /* Cabeçalho (preto) */
 header.top { background: var(--ink); color: #fff; padding-top: calc(env(safe-area-inset-top) + 12px); padding-bottom: 12px; }
@@ -111,22 +122,20 @@ h1 { font-size: 19px; margin: 0; line-height: 1.2; font-weight: 750; letter-spac
 .home-logo { display: block; width: 100%; max-width: 330px; margin: 26px auto 22px; }
 .home-card {
   position: relative; width: 100%; border: 1px solid var(--line); background: var(--surface); border-radius: 20px;
-  padding: 18px 18px 18px 20px; margin-bottom: 12px; display: flex; align-items: center; gap: 14px; text-align: left; color: var(--text);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 4px 14px rgba(0, 0, 0, .04); min-height: 96px;
+  padding: 20px 20px; margin-bottom: 12px; display: flex; align-items: center; gap: 12px; text-align: left; color: var(--text);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 4px 14px rgba(0, 0, 0, .04); min-height: 88px;
 }
 .home-card:active { background: var(--surface-2); }
-.home-card .ico { width: 48px; height: 48px; border-radius: 14px; background: var(--ink); color: var(--primary); display: grid; place-items: center; flex: none; }
-.home-card .ico svg { width: 24px; height: 24px; }
-.home-card .txt { flex: 1; min-width: 0; }
-.home-card .ttl, .home-card .sub, .home-card .prev { display: block; }
-.home-card .ttl { font-size: 19px; font-weight: 750; }
-.home-card .sub { color: var(--muted); font-size: 14px; margin-top: 2px; }
-.home-card .prev { color: var(--text); font-size: 15px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.home-card .badge {
-  min-width: 26px; height: 26px; padding: 0 8px; border-radius: 999px; background: var(--primary); color: var(--on-primary);
-  font-size: 14px; font-weight: 800; display: grid; place-items: center; flex: none;
+.home-card .txt { flex: 1; min-width: 0; padding-right: 30px; }
+.home-card .ttl, .home-card .sub { display: block; }
+.home-card .ttl { font-size: 21px; font-weight: 700; line-height: 1.2; }
+.home-card .sub { color: var(--muted); font-size: 15px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.home-card .count {
+  position: absolute; top: 14px; right: 14px; min-width: 30px; height: 30px; padding: 0 9px; border-radius: 999px;
+  background: var(--primary); color: var(--on-primary); font-size: 15px; font-weight: 700; display: grid; place-items: center;
+  font-variant-numeric: tabular-nums;
 }
-.home-card .chev2 { color: #b5b5b5; font-size: 26px; font-weight: 400; flex: none; line-height: 1; }
+.home-card .chev2 { color: #b5b5b5; font-size: 28px; font-weight: 400; flex: none; line-height: 1; position: absolute; right: 18px; bottom: 16px; }
 .page-head { display: flex; align-items: center; gap: 6px; margin: 6px 0 0; }
 .page-head .back { border: 0; background: none; color: var(--primary); font-weight: 700; font-size: 16px; min-height: 44px; padding: 0 8px 0 0; }
 .page-head h2 { margin: 0; font-size: 22px; font-weight: 750; }
@@ -150,25 +159,26 @@ h1 { font-size: 19px; margin: 0; line-height: 1.2; font-weight: 750; letter-spac
   width: 100%; min-height: 52px; border: 0; background: none; display: flex; align-items: center; gap: 10px; padding: 0 4px;
   color: var(--text); text-align: left;
 }
-.sec-head .nm { flex: 1; min-width: 0; font-size: 15px; font-weight: 750; text-transform: uppercase; letter-spacing: .06em; overflow-wrap: anywhere; }
-.sec-head .n { color: var(--muted); font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.sec-head .bar { width: 5px; height: 20px; border-radius: 3px; background: var(--sc); flex: none; }
+.sec-head .nm { flex: 1; min-width: 0; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; overflow-wrap: anywhere; color: var(--sc); }
+.sec-head .n { color: var(--sc); background: var(--ss); border-radius: 999px; min-width: 28px; height: 24px; padding: 0 8px; display: grid; place-items: center; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .sec-head .chev { width: 20px; height: 20px; color: var(--muted); transition: transform .15s; flex: none; }
 .sec-head[aria-expanded="false"] .chev { transform: rotate(-90deg); }
 .sec-empty { color: var(--muted); font-size: 14px; padding: 4px 4px 10px; }
 .row-item {
-  width: 100%; border: 1px solid var(--line); background: var(--surface); border-radius: 14px; margin-bottom: 6px; min-height: 58px;
+  width: 100%; border: 1px solid var(--line); border-left: 4px solid var(--sc, var(--line)); background: var(--surface); border-radius: 14px; margin-bottom: 6px; min-height: 58px;
   display: flex; align-items: center; gap: 12px; padding: 8px 16px; text-align: left; color: var(--text);
 }
 .row-item:active { background: var(--surface-2); }
-.row-item .nm { flex: 1; min-width: 0; font-size: 17px; font-weight: 600; overflow-wrap: anywhere; line-height: 1.3; }
-.row-item .q { flex: none; font-size: 24px; font-weight: 750; font-variant-numeric: tabular-nums; line-height: 1; white-space: nowrap; }
+.row-item .nm { flex: 1; min-width: 0; font-size: 17px; font-weight: 500; overflow-wrap: anywhere; line-height: 1.3; }
+.row-item .q { flex: none; font-size: 24px; font-weight: 700; color: var(--sc, var(--text)); font-variant-numeric: tabular-nums; line-height: 1; white-space: nowrap; }
 .row-item .q small { font-size: 13px; font-weight: 600; color: var(--muted); margin-left: 4px; }
-.fab {
-  position: fixed; right: calc(16px + env(safe-area-inset-right)); bottom: calc(var(--nav-h) + 16px + env(safe-area-inset-bottom));
-  width: 60px; height: 60px; border-radius: 18px; border: 0; background: var(--primary); color: var(--on-primary);
-  font-size: 32px; font-weight: 500; line-height: 1; z-index: 9; box-shadow: 0 6px 16px rgba(240, 123, 29, .35);
-}
-.fab:active { background: var(--primary-press); }
+.dock { display: none; max-width: 720px; margin: 0 auto; padding: 8px 16px 0; justify-content: flex-end; }
+body[data-view="stock"] .dock { display: flex; }
+.dock .btn { min-height: 48px; padding: 0 20px; border-radius: 999px; font-size: 16px; font-weight: 700; }
+body[data-view="stock"] main { padding-bottom: calc(var(--nav-h) + 56px + 40px + env(safe-area-inset-bottom)); }
+/* teclado aberto: a barra de baixo sai do caminho */
+body.kb .bottom { display: none; }
 
 /* Folha do produto */
 .prod-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
@@ -186,8 +196,14 @@ h1 { font-size: 19px; margin: 0; line-height: 1.2; font-weight: 750; letter-spac
 
 /* Gerir secções */
 .sec-row { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin-bottom: 8px; }
-.sec-row .top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
-.sec-row .top b { font-size: 17px; overflow-wrap: anywhere; min-width: 0; }
+.sec-row .top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.sec-row .top .tl { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.swatch-btn { width: 44px; height: 44px; flex: none; border: 0; background: none; display: grid; place-items: center; border-radius: 12px; margin: -6px 0 -6px -8px; }
+.swatch-btn i, .swatches button i { display: block; width: 26px; height: 26px; border-radius: 50%; background: var(--sc); box-shadow: inset 0 0 0 3px var(--ss); }
+.swatches { display: flex; flex-wrap: wrap; gap: 4px; }
+.swatches button { width: 44px; height: 44px; border: 2px solid transparent; border-radius: 50%; background: none; display: grid; place-items: center; padding: 0; }
+.swatches button[aria-pressed="true"] { border-color: var(--sc); }
+.sec-row .top b { font-size: 17px; overflow-wrap: anywhere; min-width: 0; color: var(--sc); }
 .sec-row .top span { color: var(--muted); font-size: 14px; white-space: nowrap; }
 .sec-row .acts { display: grid; grid-template-columns: 48px 48px 1fr 1fr; gap: 6px; }
 .sec-row .acts .btn { min-height: 44px; font-size: 14px; padding: 0 8px; border-radius: 12px; }
@@ -216,7 +232,7 @@ h1 { font-size: 19px; margin: 0; line-height: 1.2; font-weight: 750; letter-spac
 .tab[aria-selected="true"] .rdot { background: #b3140c; }
 
 /* Lista */
-main { padding-bottom: calc(var(--nav-h) + 100px + env(safe-area-inset-bottom)); }
+main { padding-bottom: calc(var(--nav-h) + 40px + env(safe-area-inset-bottom)); }
 .group-title {
   display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
   margin: 20px 4px 8px; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; font-weight: 750; color: var(--muted);
@@ -437,6 +453,7 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
   opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 100; max-width: calc(100% - 32px); text-align: center;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+body[data-view="stock"] .toast { bottom: calc(var(--nav-h) + 72px + env(safe-area-inset-bottom)); }
 </style>
 </head>
 <body>
@@ -446,7 +463,7 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
     <div class="head-row">
       <svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 2A22 22 0 0 1 46 24A22 22 0 0 1 24 46A22 22 0 0 1 2 24V2Z" fill="#f07b1d"/><circle cx="24" cy="24" r="15" fill="#fff"/><circle cx="24" cy="24" r="12" fill="#1b1b1b"/></svg>
       <div class="title-text">
-        <h1>Stock do snack bar</h1>
+        <h1>Stock caffé c@ffé</h1>
         <div class="summary" id="summary"></div>
       </div>
       <button class="user-chip" id="userChip" aria-label="Trocar utilizador">
@@ -469,14 +486,12 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
         <text x="86" y="140" font-family="'Century Gothic','Futura','Avenir Next',system-ui,sans-serif" font-size="56" font-weight="300" letter-spacing="1" fill="#1b1b1b">c<tspan fill="#f07b1d">@</tspan>ffé</text>
       </svg>
       <button class="home-card" id="cardNotices">
-        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg></span>
-        <span class="txt"><span class="ttl">Avisos</span><span class="sub" id="cardNoticesSub"></span><span class="prev" id="cardNoticesPrev"></span></span>
-        <span class="badge" id="cardNoticesBadge" hidden></span><span class="chev2" aria-hidden="true">›</span>
+        <span class="txt"><span class="ttl">Avisos</span><span class="sub" id="cardNoticesSub"></span></span>
+        <span class="chev2" aria-hidden="true">›</span><span class="count" id="cardNoticesBadge" hidden></span>
       </button>
       <button class="home-card" id="cardFaltas">
-        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5h11M9 12h11M9 19h11"/><path d="M4 5h.01M4 12h.01M4 19h.01" stroke-width="3"/></svg></span>
-        <span class="txt"><span class="ttl">Faltas</span><span class="sub" id="cardFaltasSub"></span><span class="prev" id="cardFaltasPrev"></span></span>
-        <span class="badge" id="cardFaltasBadge" hidden></span><span class="chev2" aria-hidden="true">›</span>
+        <span class="txt"><span class="ttl">Faltas</span><span class="sub" id="cardFaltasSub"></span></span>
+        <span class="chev2" aria-hidden="true">›</span><span class="count" id="cardFaltasBadge" hidden></span>
       </button>
     </div>
   </main>
@@ -541,7 +556,6 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
       <div id="list"></div>
     </div>
   </main>
-  <button class="fab" id="btnNew" aria-label="Novo produto">+</button>
 </section>
 
 <section id="histView" hidden>
@@ -563,10 +577,11 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
 
 <div class="bottom">
   <button class="sync-strip" id="syncStrip"></button>
+  <div class="dock"><button class="btn btn-primary" id="btnNew">+ Novo produto</button></div>
   <nav class="nav" aria-label="Navegação">
     <button id="navNotices" aria-current="page">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7"/><path d="M6 10v10h12V10"/></svg>
-      Início<span class="nav-dot" id="noticeDot" hidden></span>
+      Início
     </button>
     <button id="navStock">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="2"/><rect x="3" y="14" width="18" height="6" rx="2"/></svg>
@@ -839,24 +854,48 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
 (function () {
   'use strict';
 
-  var DEFAULT_SECTIONS = ['Padaria', 'Pastelaria', 'Congelador', 'Utensílios', 'Limpeza', 'Frigorífico', 'Armazém'];
+  var DEFAULT_SECTIONS = ['Padaria', 'Pastelaria', 'Congelador', 'Utensílios', 'Limpeza', 'Frigorífico', 'Armazém', 'Bar', 'Mercearia'];
+  // paleta das secções (cor forte para texto, com contraste ≥ 4,5:1 sobre branco, e variante suave para fundos)
+  var PALETTE = [
+    { id: 'laranja', name: 'Laranja', c: '#BA520A', soft: '#FDEEE2' },
+    { id: 'ambar', name: 'Âmbar', c: '#9A6200', soft: '#FBF1DC' },
+    { id: 'verde', name: 'Verde', c: '#2E7D32', soft: '#E6F2E7' },
+    { id: 'verde-escuro', name: 'Verde-escuro', c: '#1F5A3A', soft: '#E3EFE8' },
+    { id: 'azul', name: 'Azul', c: '#1D63B8', soft: '#E5EEF9' },
+    { id: 'roxo', name: 'Roxo', c: '#7A3DB0', soft: '#F0E8F8' },
+    { id: 'rosa', name: 'Rosa', c: '#C0306B', soft: '#FBE6EE' },
+    { id: 'castanho', name: 'Castanho', c: '#7A4B2A', soft: '#F2EAE3' },
+    { id: 'cinzento-azulado', name: 'Cinzento-azulado', c: '#4B5E70', soft: '#E9EDF1' }
+  ];
+  var DEFAULT_COLORS = { 'padaria': 'ambar', 'pastelaria': 'rosa', 'congelador': 'azul', 'utensilios': 'cinzento-azulado', 'limpeza': 'verde',
+    'frigorifico': 'roxo', 'armazem': 'castanho', 'bar': 'laranja', 'mercearia': 'verde-escuro' };
+  function paletteById(id) { for (var i = 0; i < PALETTE.length; i++) if (PALETTE[i].id === id) return PALETTE[i]; return null; }
+  // cor de uma secção: a escolhida; senão a de origem pelo nome; senão uma fixa calculada a partir do id (estável)
+  function secColor(sec) {
+    if (!sec) return PALETTE[8];
+    var c = paletteById(sec.color) || paletteById(DEFAULT_COLORS[norm(sec.name)]);
+    if (c) return c;
+    var h = 0; String(sec.id).split('').forEach(function (ch) { h = (h * 31 + ch.charCodeAt(0)) >>> 0; });
+    return PALETTE[h % PALETTE.length];
+  }
+  function secStyle(sec) { var c = secColor(sec); return '--sc:' + c.c + ';--ss:' + c.soft; }
   var UNITS = ['un', 'kg', 'L'];
   var STORE_KEY = 'stock-snack-bar-v1';
   var bridge = window.AndroidBridge || null;
 
   var SAMPLE = [
-    ['Café em grão', 'Armazém', 4, 'kg'],
-    ['Café descafeinado', 'Armazém', 1, 'kg'],
+    ['Café em grão', 'Mercearia', 4, 'kg'],
+    ['Café descafeinado', 'Mercearia', 1, 'kg'],
     ['Leite', 'Frigorífico', 18, 'L'],
     ['Leite de aveia', 'Armazém', 2, 'L'],
     ['Copos 8 oz', 'Utensílios', 300, 'un'],
     ['Tampas', 'Utensílios', 120, 'un'],
-    ['Pacotes de açúcar', 'Armazém', 500, 'un'],
-    ['Chocolate em pó', 'Armazém', 1, 'kg'],
-    ['Água 0,5 L', 'Armazém', 36, 'un'],
-    ['Refrigerantes', 'Frigorífico', 30, 'un'],
-    ['Sumos', 'Frigorífico', 10, 'un'],
-    ['Cerveja', 'Frigorífico', 48, 'un'],
+    ['Pacotes de açúcar', 'Mercearia', 500, 'un'],
+    ['Chocolate em pó', 'Mercearia', 1, 'kg'],
+    ['Água 0,5 L', 'Bar', 36, 'un'],
+    ['Refrigerantes', 'Bar', 30, 'un'],
+    ['Sumos', 'Bar', 10, 'un'],
+    ['Cerveja', 'Bar', 48, 'un'],
     ['Pão para sandes', 'Padaria', 25, 'un'],
     ['Croissants', 'Pastelaria', 0, 'un'],
     ['Fiambre', 'Frigorífico', 2, 'kg'],
@@ -944,7 +983,9 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
       (Array.isArray(src) ? src : Object.keys(src).map(function (k) { var x = src[k]; return x && typeof x === 'object' ? Object.assign({}, x, { id: k }) : null; }))
         .forEach(function (x) {
           if (!x || typeof x.name !== 'string' || !x.name.trim()) return;
-          out.push({ id: String(x.id), name: x.name.trim().slice(0, 30), order: Number(x.order) || 0 });
+          var it = { id: String(x.id), name: x.name.trim().slice(0, 30), order: Number(x.order) || 0 };
+          if (typeof x.color === 'string' && x.color) it.color = x.color.slice(0, 30);
+          out.push(it);
         });
     }
     return out;
@@ -963,7 +1004,7 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
     while (sections.some(function (x) { return x.id === id; })) id = base + '-' + (i++);
     return id;
   }
-  function sectionsMap() { var m = {}; sections.forEach(function (x) { m[x.id] = { name: x.name, order: x.order }; }); return m; }
+  function sectionsMap() { var m = {}; sections.forEach(function (x) { m[x.id] = { name: x.name, order: x.order }; if (x.color) m[x.id].color = x.color; }); return m; }
   // Mudança única (v1.7): as secções antigas Pão, Detergentes, Lácteos e Comida são apagadas e os produtos
   // passam para as secções novas (pelo nome, se for um produto conhecido; senão pela secção equivalente).
   var OLD_SECS = { 'pao': 'Padaria', 'detergentes': 'Limpeza', 'lacteos': 'Frigorífico', 'comida': 'Armazém' };
@@ -990,6 +1031,28 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
     if (Object.keys(extra).length) enqueueSet(null, null, extra);
     try { localStorage.setItem(key, '1'); } catch (e) {}
     return Object.keys(extra).length > 0;
+  }
+  // Bar e Mercearia (v1.8): acrescentadas uma só vez. Com partilha, a marca fica em lojas/<código>/flags para que
+  // nenhum telemóvel as volte a criar depois de alguém as apagar.
+  var sharedFlags = {};
+  function addNewDefaultSections() {
+    var localKey = STORE_KEY + '-secoes-v18:local';
+    if (syncOn()) {
+      if (sync.rev == null || sync.queue.length) return false; // espera pelos dados partilhados
+      if (sharedFlags.secoesBarMercearia) return false;
+    } else {
+      try { if (localStorage.getItem(localKey)) return false; } catch (e) {}
+    }
+    var extra = {}, maxOrder = sections.reduce(function (m, x) { return Math.max(m, x.order); }, -1);
+    ['Bar', 'Mercearia'].forEach(function (n) {
+      if (findSectionName(n)) return;
+      var x = { id: secIdFor(n), name: n, order: ++maxOrder };
+      sections.push(x);
+      extra['sections/' + x.id] = { name: x.name, order: x.order };
+    });
+    if (syncOn()) { sharedFlags.secoesBarMercearia = true; extra['flags/secoesBarMercearia'] = true; enqueueSet(null, null, extra); }
+    else { try { localStorage.setItem(localKey, '1'); } catch (e) {} }
+    return true;
   }
   // Garante as secções: as de origem se ainda não há nenhuma, e uma secção extra para cada família antiga dos produtos.
   // Os ids vêm do nome, por isso dois telemóveis a criar a mesma secção escrevem no mesmo nó.
@@ -1099,7 +1162,8 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
     elSummary.textContent = total + (total === 1 ? ' produto' : ' produtos');
 
     var mig = migrateOldSections();
-    if (ensureSections() || mig) save();
+    var add = sections.length ? addNewDefaultSections() : false;
+    if (ensureSections() || mig || add) save();
     renderList();
     renderNotices();
     renderFaltas();
@@ -1151,8 +1215,8 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
       var g = vis.filter(function (p) { return norm(p.family) === norm(sec.name); }).sort(sortByActivity(act));
       if (searching && !g.length) return;
       var open = searching || !closedSecs[sec.id];
-      html += '<div class="sec"><button class="sec-head" data-sec="' + esc(sec.id) + '" aria-expanded="' + open + '">' + SVG_CHEV +
-        '<span class="nm">' + esc(sec.name) + '</span><span class="n">' + g.length + '</span></button>';
+      html += '<div class="sec" style="' + secStyle(sec) + '"><button class="sec-head" data-sec="' + esc(sec.id) + '" aria-expanded="' + open + '">' + SVG_CHEV +
+        '<span class="bar"></span><span class="nm">' + esc(sec.name) + '</span><span class="n">' + g.length + '</span></button>';
       if (open) html += g.length ? g.map(rowHtml).join('') : '<div class="sec-empty">Sem produtos nesta secção.</div>';
       html += '</div>';
     });
@@ -1276,6 +1340,7 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
     shopping = sanitizeShopping(sSrc);
     if (secSrc && typeof secSrc === 'object') Object.keys(secSrc).forEach(function (k) { var x = secSrc[k]; if (!x || typeof x.name !== 'string') fixes.push(['sections/' + k, null]); });
     sections = sanitizeSections(secSrc);
+    sharedFlags = (data && data.flags && typeof data.flags === 'object') ? data.flags : {};
     // mesmo nome com ids diferentes (criados ao mesmo tempo): fica a primeira
     var seenSec = {};
     sortedSections().forEach(function (x) {
@@ -1442,7 +1507,7 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
       return;
     }
     // base vazia: criar a partilha com o stock deste telemóvel
-    var r2 = await http('PUT', shop + '.json', { items: itemsMap(), users: usersMap(), history: historyMap(), notices: noticesMap(), shopping: shoppingMap(), sections: sectionsMap(), rev: 1 });
+    var r2 = await http('PUT', shop + '.json', { items: itemsMap(), users: usersMap(), history: historyMap(), notices: noticesMap(), shopping: shoppingMap(), sections: sectionsMap(), flags: { secoesBarMercearia: true }, rev: 1 });
     if (!httpOk(r2)) { err.textContent = 'Não foi possível criar a partilha (código ' + r2.status + ').'; return; }
     sync = { url: shop, queue: [], rev: 1 };
     save();
@@ -1803,22 +1868,18 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
     noticeSeen[key + me] = now;
     try { localStorage.setItem(STORE_KEY + '-avisos-vistos', JSON.stringify(noticeSeen)); } catch (e) {}
   }
-  // cartões do Início: total por resolver, novidades (badge laranja) e o mais recente
+  // cartões do Início: círculo laranja com o número por resolver (sem número quando é 0) e o mais recente
   function updateNoticeDot() {
-    var nN = unseenIn(notices, ''), nF = unseenIn(shopping, 'f:');
     var openN = notices.filter(function (n) { return !n.resolved; }), openF = shopping.filter(function (x) { return !x.done; });
-    function card(prefix, open, nNew, none, one, many) {
-      $(prefix + 'Sub').textContent = !open.length ? none : open.length + ' ' + (open.length === 1 ? one : many) + (nNew ? ' · ' + nNew + (nNew === 1 ? ' novo' : ' novos') : '');
+    function card(prefix, open, none) {
       var last = open.slice().sort(function (a, b) { return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || b.ts - a.ts; })[0];
-      $(prefix + 'Prev').textContent = last ? last.text : '';
-      $(prefix + 'Prev').hidden = !last;
-      $(prefix + 'Badge').textContent = nNew;
-      $(prefix + 'Badge').hidden = !nNew;
+      $(prefix + 'Sub').textContent = last ? last.text : none;
+      $(prefix + 'Badge').textContent = open.length;
+      $(prefix + 'Badge').hidden = !open.length;
+      $(prefix + 'Badge').setAttribute('aria-label', open.length + ' por resolver');
     }
-    card('cardNotices', openN, nN, 'Sem avisos', 'aviso', 'avisos');
-    card('cardFaltas', openF, nF, 'Não falta nada', 'em falta', 'em falta');
-    var inHome = state.view === 'home' || state.view === 'avisos' || state.view === 'faltas';
-    $('noticeDot').hidden = !(!inHome && (nN > 0 || nF > 0));
+    card('cardNotices', openN, 'Sem avisos');
+    card('cardFaltas', openF, 'Não falta nada');
   }
   $('cardNotices').addEventListener('click', function () { setView('avisos'); });
   $('cardFaltas').addEventListener('click', function () { setView('faltas'); });
@@ -2151,7 +2212,7 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
   // ---------- lista de compras ----------
   // ---------- exportar / importar ----------
   function exportText() {
-    var lines = ['Stock snack bar - ' + nowStr()];
+    var lines = ['Stock caffé c@ffé - ' + nowStr()];
     items.slice().sort(function (a, b) {
       return sectionRank(a.family) - sectionRank(b.family) || a.name.localeCompare(b.name, 'pt', { sensitivity: 'base' });
     }).forEach(function (p) {
@@ -2246,6 +2307,7 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
     if (!p) return;
     $('pName').textContent = p.name;
     $('pSec').textContent = p.family;
+    $('pSec').style.color = secColor(sections.find(function (x) { return norm(x.name) === norm(p.family); })).c;
     $('pQty').textContent = fmt(p.qty);
     $('pUnit').textContent = p.unit;
     $('pDec').disabled = p.qty <= 0;
@@ -2348,11 +2410,18 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
     var keepVal = keepRen ? keepRen.value : null;
     $('secList').innerHTML = list.map(function (x, i) {
       var n = itemsIn(x.name).length;
-      var html = '<div class="sec-row" data-sid="' + esc(x.id) + '"><div class="top"><b>' + esc(x.name) + '</b><span>' + n + (n === 1 ? ' produto' : ' produtos') + '</span></div>' +
+      var col = secColor(x);
+      var html = '<div class="sec-row" data-sid="' + esc(x.id) + '" style="' + secStyle(x) + '"><div class="top"><span class="tl">' +
+        '<button class="swatch-btn" data-sa="color" aria-label="Cor de ' + esc(x.name) + ': ' + esc(col.name) + '"><i></i></button><b>' + esc(x.name) + '</b></span>' +
+        '<span>' + n + (n === 1 ? ' produto' : ' produtos') + '</span></div>' +
         '<div class="acts"><button class="btn btn-soft mv" data-sa="up" aria-label="Subir ' + esc(x.name) + '"' + (i === 0 ? ' disabled' : '') + '>↑</button>' +
         '<button class="btn btn-soft mv" data-sa="down" aria-label="Descer ' + esc(x.name) + '"' + (i === list.length - 1 ? ' disabled' : '') + '>↓</button>' +
         '<button class="btn btn-soft" data-sa="ren">Renomear</button><button class="btn btn-danger" data-sa="del">Apagar</button></div>';
-      if (secUi.renaming === x.id) {
+      if (secUi.coloring === x.id) {
+        html += '<div class="sub"><label>Cor da secção</label><div class="swatches">' + PALETTE.map(function (c) {
+          return '<button data-sa="pick" data-color="' + c.id + '" style="--sc:' + c.c + ';--ss:' + c.soft + '" aria-label="' + esc(c.name) + '" aria-pressed="' + (c.id === col.id) + '"><i></i></button>';
+        }).join('') + '</div></div>';
+      } else if (secUi.renaming === x.id) {
         html += '<div class="sub"><input class="ren-sec" type="text" maxlength="30" value="' + esc(x.name) + '" aria-label="Novo nome da secção">' +
           '<div class="row"><button class="btn btn-primary" data-sa="ren-ok">Guardar</button><button class="btn btn-soft" data-sa="cancel">Cancelar</button></div>' +
           '<div class="err ren-err"></div></div>';
@@ -2394,6 +2463,15 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
     var row = b.closest('.sec-row'), id = row.dataset.sid, a = b.dataset.sa;
     var x = sections.find(function (y) { return y.id === id; });
     if (!x) return;
+    if (a === 'color') { secUi = { renaming: '', deleting: '', coloring: secUi.coloring === id ? '' : id }; renderSecList(); return; }
+    if (a === 'pick') {
+      x.color = b.dataset.color;
+      enqueueSet('sections/' + id + '/color', x.color);
+      secUi = { renaming: '', deleting: '', coloring: '' };
+      save(); render(); renderSecList();
+      toast('Cor da secção alterada');
+      return;
+    }
     if (a === 'up' || a === 'down') {
       var list = sortedSections(), i = list.indexOf(x), j = a === 'up' ? i - 1 : i + 1;
       if (j < 0 || j >= list.length) return;
@@ -2545,6 +2623,7 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
   function setView(v) {
     var changed = state.view !== v;
     state.view = v;
+    document.body.setAttribute('data-view', v);
     Object.keys(VIEWS).forEach(function (k) { $(VIEWS[k]).hidden = k !== v; });
     ['navNotices', 'navStock', 'navHist'].forEach(function (n) { $(n).setAttribute('aria-current', NAVS[v] === n ? 'page' : 'false'); });
     if (v === 'hist') renderHistory(); else render();
@@ -2582,6 +2661,21 @@ details.howto pre { background: var(--surface); border-radius: 10px; padding: 10
     var r = e.target.closest('.row-item');
     if (r) openProduct(r.dataset.id);
   });
+
+  // teclado aberto: o ecrã encolhe (Android ajusta a altura) com um campo de texto ativo fora das janelas.
+  // Nesse caso a barra de baixo sai do caminho; volta quando o teclado fecha, mesmo que o campo continue ativo.
+  var fullH = window.innerHeight, fullW = window.innerWidth;
+  function updateKb() {
+    if (window.innerWidth !== fullW) { fullW = window.innerWidth; fullH = window.innerHeight; } // rodou o ecrã
+    fullH = Math.max(fullH, window.innerHeight);
+    var t = document.activeElement;
+    var typing = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA') && !t.closest('.overlay') && !t.closest('.user-screen');
+    document.body.classList.toggle('kb', !!typing && window.innerHeight < fullH * 0.75);
+  }
+  window.addEventListener('resize', updateKb);
+  document.addEventListener('focusin', updateKb);
+  document.addEventListener('focusout', function () { setTimeout(updateKb, 50); });
+  document.body.setAttribute('data-view', state.view);
 
   // guardar ao sair (garantia)
   document.addEventListener('visibilitychange', function () {

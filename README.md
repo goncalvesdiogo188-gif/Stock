@@ -1,4 +1,4 @@
-# Stock do snack bar
+# Stock caffé c@ffé
 
 App Android (WebView) para controlar o stock de um snack bar. Funciona offline; os dados ficam guardados no telemóvel.
 
@@ -53,6 +53,6 @@ Até 3 utilizadores (só nome, sem palavra-passe), escolhidos num ecrã inicial;
 - **Histórico**: alterações de stock com pesquisa por produto e filtro por utilizador.
 - **Mais**: receber mercadoria, contagem rápida, enviar/receber stock em texto, partilha, utilizadores e dados de exemplo.
 
-Visual: fundo branco; preto e laranja (cores do logotipo) no cabeçalho e nos detalhes. As secções antigas Pão, Detergentes, Lácteos e Comida foram retiradas na v1.7 (os produtos passaram para as secções novas).
+Visual: fundo branco; preto e laranja (cores do logotipo) no cabeçalho e nos detalhes. Fontes locais (OFL) em `app/src/main/assets/fonts`: Poppins nos títulos e Inter no texto. Cada secção tem uma cor (paleta de 9, escolhida em "Gerir secções", campo opcional `color` em `lojas/<código>/sections`). Secções Bar e Mercearia acrescentadas uma vez (marca em `lojas/<código>/flags/secoesBarMercearia`). As secções antigas Pão, Detergentes, Lácteos e Comida foram retiradas na v1.7 (os produtos passaram para as secções novas).
 
 A app não usa mínimos. Produtos antigos com `min` carregam normalmente (o valor é mantido, sem uso). Texto de enviar/receber: `Secção | Nome | quantidade unidade` (textos antigos com `| min N` continuam a ser aceites).
