@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gota do logotipo para o ecrã de arranque: 288dp, com a gota (122dp) dentro do círculo de 192dp
+     que o Android 12+ mostra. A mesma gota, ao mesmo tamanho, aparece no ecrã de abertura da página. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="288dp" android:height="288dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <group android:pivotX="54" android:pivotY="54" android:scaleX="0.85" android:scaleY="0.85">
+        <path android:fillColor="#F07B1D"
+            android:pathData="M54,27A27,27 0 0,1 81,54A27,27 0 0,1 54,81H27V54A27,27 0 0,1 54,27Z" />
+        <path android:fillColor="#FFFFFF"
+            android:pathData="M54,36.5A17.5,17.5 0 1,1 54,71.5A17.5,17.5 0 1,1 54,36.5Z" />
+        <path android:fillColor="#1B1B1B"
+            android:pathData="M54,40A14,14 0 1,1 54,68A14,14 0 1,1 54,40Z" />
+    </group>
+</vector>

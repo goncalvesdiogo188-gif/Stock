@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fundo da janela ao arrancar (Android 8 a 11): branco com a gota ao centro. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/bg" />
+    <item android:drawable="@drawable/splash_icon" android:gravity="center"
+        android:width="288dp" android:height="288dp" />
+</layer-list>

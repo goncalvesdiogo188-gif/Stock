@@ -12,7 +12,9 @@ import android.graphics.Insets;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.webkit.JavascriptInterface;
@@ -36,6 +38,8 @@ public class MainActivity extends Activity {
     private WebView web;
     private SharedPreferences prefs;
     private final ExecutorService net = Executors.newSingleThreadExecutor();
+    // O ecrã de arranque (gota) fica até a página avisar que está pronta (no máximo 1,2 s).
+    private volatile boolean appReady = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +81,17 @@ public class MainActivity extends Activity {
         root.addView(web, new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         setContentView(root);
+
+        final View content = findViewById(android.R.id.content);
+        content.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                if (!appReady) return false;
+                content.getViewTreeObserver().removeOnPreDrawListener(this);
+                return true;
+            }
+        });
+        content.postDelayed(() -> { appReady = true; content.invalidate(); }, 1200);
 
         // Respeitar as margens do ecrã (barras do sistema, recorte da câmara e teclado).
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -183,6 +198,34 @@ public class MainActivity extends Activity {
                 final String js = "window.__httpDone(" + JSONObject.quote(id) + "," + r[0] + ","
                         + JSONObject.quote((String) r[1]) + ")";
                 runOnUiThread(() -> { if (web != null) web.evaluateJavascript(js, null); });
+            });
+        }
+
+        @JavascriptInterface
+        public void ready() {
+            runOnUiThread(() -> {
+                appReady = true;
+                View content = findViewById(android.R.id.content);
+                if (content != null) content.invalidate();
+            });
+        }
+
+        // Vibração curta pelo feedback háptico do sistema (sem permissões; respeita a definição do telemóvel).
+        @JavascriptInterface
+        public void haptic(final String kind) {
+            runOnUiThread(() -> {
+                try {
+                    if (web == null) return;
+                    int c = HapticFeedbackConstants.KEYBOARD_TAP;
+                    if ("confirm".equals(kind)) {
+                        c = Build.VERSION.SDK_INT >= 30 ? HapticFeedbackConstants.CONFIRM : HapticFeedbackConstants.VIRTUAL_KEY;
+                    } else if ("reject".equals(kind)) {
+                        c = Build.VERSION.SDK_INT >= 30 ? HapticFeedbackConstants.REJECT : HapticFeedbackConstants.LONG_PRESS;
+                    }
+                    web.performHapticFeedback(c);
+                } catch (Throwable ignored) {
+                    // sem suporte: falha em silêncio
+                }
             });
         }
 

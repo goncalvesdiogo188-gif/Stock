@@ -6,7 +6,7 @@
     <color name="icon_fg">#F07B1D</color>
     <!-- Fundo branco; barra de estado preta como o cabeçalho da app. -->
     <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:windowBackground">@drawable/splash_window</item>
         <item name="android:colorPrimary">@color/brand</item>
         <item name="android:colorAccent">@color/brand</item>
         <item name="android:statusBarColor">@color/ink</item>
