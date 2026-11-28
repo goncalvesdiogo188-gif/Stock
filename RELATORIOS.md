@@ -1,13 +1,73 @@
 # Relatórios — Stock do snack bar
 
 ## Estado atual do projeto
-- **Funciona (testado em Chromium):** APK v2.2 em `dist/` ("caffé c@ffé").
-  - Início com logotipo e cartões Avisos/Faltas espaçados de forma proporcional à altura do ecrã.
-  - Folha do produto com um só "Guardar" (quantidade escrita, nome, unidade, secção e nota), sempre à vista no fundo da folha.
-  - Mantém stock em secções, ordenar, lista de compras, contagem por secção, histórico com filtros, partilha Firebase e modo offline.
-- **Falta:** testar num telemóvel real (espaços do Início, teclado verdadeiro) e com a Firebase verdadeira.
-- **Maior risco:** a partilha só foi testada contra uma imitação local da Firebase.
+- **Funciona (testado em Chromium):** APK v2.3 em `dist/` ("caffé c@ffé").
+  - "Desfazer" durante 5 s em quantidades, produtos apagados, avisos e faltas.
+  - Ecrã de arranque com a gota (nativo no Android 12+). Animações curtas, que respeitam "reduzir animações". Vibração ligeira com opção em Mais.
+  - Estilo com medidas numa escala única (variáveis CSS) e ícones iguais. Bolinha de sincronização no cabeçalho.
+  - Mantém stock em secções, ordenar, compras, contagem, histórico, partilha Firebase e modo offline.
+- **Falta:** testar num telemóvel real: vibração, ecrã de arranque nativo, animações a 60 fps, botão voltar. Testar também com a Firebase verdadeira.
+- **Maior risco:** a partilha só foi testada contra uma imitação local da Firebase. A vibração e o arranque nativo só se veem num Android real.
 - **Segurança:** a palavra-passe da chave continua no histórico do git (até ao commit `60d93c4`). Recomenda-se mudá-la.
+
+---
+
+## 2026-11-28 09:20 — Desfazer, arranque, animações, vibração, estilo uniforme e bolinha de sincronização (v2.3)
+- **Pedido:** polimento visual e de experiência, sem mudar dados, estrutura da Firebase nem regras: Desfazer, ecrã de abertura, animações, vibração, estilo uniforme e indicador discreto de sincronização.
+- **Feito:**
+  - **Desfazer:**
+    - Barra escura durante 5 s com texto curto (ex.: "Água 0,5 L: 36 → 34") e "Desfazer" a laranja.
+    - Aparece depois de +, −, escrever e guardar uma quantidade, apagar um produto, resolver/reabrir/apagar um aviso e marcar/apagar uma falta.
+    - Toques seguidos no mesmo produto juntam-se numa só barra, com o valor inicial.
+    - Desfazer uma quantidade escreve o valor anterior (não uma soma) e regista no histórico "Ajuste · desfeito". Um produto reposto fica como "Ajuste · desfeito: apagar", com a mesma secção, nota e ordem. Avisos e faltas voltam ao estado anterior.
+    - Usa a fila normal, por isso funciona offline e com a partilha.
+    - A barra fica por cima da barra de baixo e do "+ Novo produto". Na folha do produto aparece logo acima do "Guardar". Substitui o aviso curto dessas ações.
+  - **Ecrã de arranque:**
+    - Android 12+: splash nativo (`values-v31`) com a gota sobre branco.
+    - Android 8–11: a janela abre com a gota ao centro (`splash_window`).
+    - O Android segura o arranque até a página avisar que está pronta (ponte `ready`; no máximo 1,2 s). Na página, a mesma gota, ao mesmo tamanho, desvanece em 0,25 s. Se algo falhar, sai sempre ao fim de 1,5 s. Não há atraso de propósito.
+  - **Animações:**
+    - Folhas a abrir (0,18 s) e a fechar (0,16 s, com descida), entrada das páginas e das secções (0,2 s), e números que mudam (pequena subida a laranja, 0,24 s).
+    - Só usam transformações e transparência, que o telemóvel faz sem esforço.
+    - Com "reduzir animações" no sistema, quase nada se move e as folhas fecham logo.
+  - **Vibração:**
+    - Feedback háptico do Android pela ponte (`haptic`, com `performHapticFeedback`), sem permissões novas. Toque curto em + e −; "confirmar" ao guardar e ao desfazer; "rejeitar" ao apagar.
+    - Respeita a definição de vibração do telemóvel e falha em silêncio.
+    - Opção "Vibração ao tocar" em Mais, ligada por defeito e guardada só neste telemóvel.
+  - **Estilo uniforme:**
+    - Todas as medidas passaram para variáveis em `:root`: espaços `--sp-*` (2 a 64 px), cantos (12 / 14 / 20 / 24 px), alturas (44 / 52 / 58 px), letra (legenda 13, pequeno 14, texto 16, subtítulo 19, título 22, números 24 / 28 / 40) e ícones (22 px, traço 2).
+    - Ícones refeitos no mesmo estilo de traço: "Mais", alfinete, seta dos cartões, "×" da pesquisa e setas de ordenar.
+    - Valores soltos foram aproximados à escala (ex.: 14 → 16 px de margem, 17 → 16 px de texto) e a margem interna por defeito dos botões foi retirada.
+    - Revistas todas as páginas e janelas com um verificador automático, sem nada fora da escala.
+  - **Bolinha de sincronização:**
+    - Bolinha de 10 px antes do utilizador, sem texto: cinzenta sem partilha, verde suave quando sincronizado, âmbar com alterações por enviar.
+    - Tocar mostra "Atualizado há X s" ou "Sem ligação: as alterações seguem quando voltares a ligar". Substitui o texto "Partilhado entre telemóveis" e a faixa vermelha de "sem Internet". A faixa fica só para erros, como falta de permissão.
+  - Versão 2.3 (versionCode 14); a palavra-passe passou só por `STOCK_KS_PASS`. README atualizado.
+- **Ficheiros:**
+  - Alterados: `app/src/main/assets/index.html`, `app/src/main/java/pt/snackbar/stock/MainActivity.java`, `app/src/main/res/values/themes.xml`, `app/src/main/res/values-v27/themes.xml`, `app/build.gradle`, `README.md`, `dist/StockSnackBar.apk`.
+  - Criados: `app/src/main/res/values-v31/themes.xml`, `app/src/main/res/drawable/splash_icon.xml`, `app/src/main/res/drawable/splash_window.xml`.
+- **Estado:**
+  - Compila. O certificado é igual, o tema do Android 12+ e a gota estão no APK, e o `index.html` dentro do APK é o testado.
+  - Teste em Chromium a 390×844 e 360×640, com dois telemóveis numa imitação local da Firebase: 102 verificações novas, mais as 160 + 137 + 80 anteriores, todas OK, sem erros JS.
+    - Desfazer em todos os tipos de ação: juntar toques, desaparecer aos 5 s, offline, e efeito no outro telemóvel e na Firebase. A barra não tapa a navegação, o "+", o "Guardar" nem os +/−.
+    - Abertura sai em menos de 1,5 s e a ponte recebe "pronta"; com movimento reduzido, a abertura sai logo, as janelas fecham sem esperar e as animações duram 1 ms.
+    - Vibração: a ponte simulada recebe "tap"/"confirm"/"reject"; com a opção desligada não vibra (opção guardada depois de recarregar); uma ponte com erro não parte nada.
+    - Bolinha nos 3 estados e as mensagens ao tocar.
+    - Uniformidade em 19 páginas e janelas: espaços, cantos, letra, ícones e alturas dentro da escala, sem texto cortado, sobreposições nem deslocamento horizontal.
+    - Continua a funcionar: utilizadores, histórico, avisos, faltas, compras, contagem, receção, partilha e secções.
+  - **Não testado:** num Android real (vibração, splash nativo e a passagem para a página, animações a 60 fps num telemóvel modesto, botão voltar) e com a Firebase verdadeira.
+- **Problemas:**
+  - Corrigidos durante o trabalho:
+    - A escala alargou a seta dos filtros do histórico e "Novo/Apagado" deixou de caber a 360 px.
+    - A bolinha cortava o título "Stock caffé c@ffé" a 360 px. Apertei os espaços do cabeçalho; com nomes curtos o título cabe.
+    - O interruptor da vibração ficava por baixo do texto.
+  - Com nomes de utilizador compridos (ex.: "Mariana") a 360 px, o título continua a ser encurtado com "…", como já acontecia antes.
+  - O texto base passou de 17 para 16 px, para haver um só tamanho de texto.
+  - A faixa vermelha "Sem Internet" deixou de aparecer: agora é a bolinha âmbar que o indica.
+- **Próximos passos:**
+  1. Instalar a v2.3 num telemóvel e ver o arranque, a vibração e o "Desfazer".
+  2. Se a vibração for fraca ou forte demais, ajustar o tipo de feedback.
+  3. Mudar a palavra-passe da chave (pendente).
 
 ---
 
